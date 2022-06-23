@@ -15,51 +15,22 @@ class Catalogues
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\OneToMany(mappedBy: 'catalogue', targetEntity: Menu::class)]
+    #[ORM\OneToMany(mappedBy: 'catalogues', targetEntity: Burger::class)]
+    private $burgers;
+
+    #[ORM\OneToMany(mappedBy: 'catalogues', targetEntity: Menu::class)]
     private $menus;
 
-    #[ORM\OneToMany(mappedBy: 'burger', targetEntity: Burger::class)]
-    private $burgers;
 
     public function __construct()
     {
-        $this->menus = new ArrayCollection();
         $this->burgers = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @return Collection<int, Menu>
-     */
-    public function getMenus(): Collection
-    {
-        return $this->menus;
-    }
-
-    public function addMenu(Menu $menu): self
-    {
-        if (!$this->menus->contains($menu)) {
-            $this->menus[] = $menu;
-            $menu->setCatalogue($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMenu(Menu $menu): self
-    {
-        if ($this->menus->removeElement($menu)) {
-            // set the owning side to null (unless already changed)
-            if ($menu->getCatalogue() === $this) {
-                $menu->setCatalogue(null);
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -74,7 +45,7 @@ class Catalogues
     {
         if (!$this->burgers->contains($burger)) {
             $this->burgers[] = $burger;
-            $burger->setBurger($this);
+            $burger->setCatalogues($this);
         }
 
         return $this;
@@ -84,11 +55,43 @@ class Catalogues
     {
         if ($this->burgers->removeElement($burger)) {
             // set the owning side to null (unless already changed)
-            if ($burger->getBurger() === $this) {
-                $burger->setBurger(null);
+            if ($burger->getCatalogues() === $this) {
+                $burger->setCatalogues(null);
             }
         }
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+            $menu->setCatalogues($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        if ($this->menus->removeElement($menu)) {
+            // set the owning side to null (unless already changed)
+            if ($menu->getCatalogues() === $this) {
+                $menu->setCatalogues(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

@@ -9,20 +9,32 @@ use App\Repository\MenuRepository;
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu extends Produit
 {
-   
     #[ORM\ManyToOne(targetEntity: Catalogues::class, inversedBy: 'menus')]
-    private $catalogue;
+    private $catalogues;
 
-   
+    #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'menus')]
+    private $gestionnaire;
 
-    public function getCatalogue(): ?Catalogues
+    public function getCatalogues(): ?Catalogues
     {
-        return $this->catalogue;
+        return $this->catalogues;
     }
 
-    public function setCatalogue(?Catalogues $catalogue): self
+    public function setCatalogues(?Catalogues $catalogues): self
     {
-        $this->catalogue = $catalogue;
+        $this->catalogues = $catalogues;
+
+        return $this;
+    }
+
+    public function getGestionnaire(): ?Gestionnaire
+    {
+        return $this->gestionnaire;
+    }
+
+    public function setGestionnaire(?Gestionnaire $gestionnaire): self
+    {
+        $this->gestionnaire = $gestionnaire;
 
         return $this;
     }
