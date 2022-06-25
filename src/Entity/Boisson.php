@@ -16,6 +16,9 @@ class Boisson extends Produit
     #[ORM\ManyToMany(targetEntity: Taille::class, inversedBy: 'boissons')]
     private $tailles;
 
+    #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'boissons')]
+    private $gestionnaire;
+
     public function __construct()
     {
         $this->tailles = new ArrayCollection();
@@ -41,6 +44,18 @@ class Boisson extends Produit
     public function removeTaille(Taille $taille): self
     {
         $this->tailles->removeElement($taille);
+
+        return $this;
+    }
+
+    public function getGestionnaire(): ?Gestionnaire
+    {
+        return $this->gestionnaire;
+    }
+
+    public function setGestionnaire(?Gestionnaire $gestionnaire): self
+    {
+        $this->gestionnaire = $gestionnaire;
 
         return $this;
     }

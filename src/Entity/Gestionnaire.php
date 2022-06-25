@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GestionnaireRepository;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: GestionnaireRepository::class)]
@@ -16,16 +17,25 @@ class Gestionnaire extends User
     private $commandes;
 
     #[ORM\OneToMany(mappedBy: 'gestionnaire', targetEntity: Burger::class)]
+    #[ApiSubresource]
     private $burgers;
 
     #[ORM\OneToMany(mappedBy: 'gestionnaire', targetEntity: Menu::class)]
     private $menus;
+
+    #[ORM\OneToMany(mappedBy: 'gestionnaire', targetEntity: Boisson::class)]
+    private $boissons;
+
+    #[ORM\OneToMany(mappedBy: 'gestionnaire', targetEntity: PortionFrite::class)]
+    private $portionFrites;
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
         $this->burgers = new ArrayCollection();
         $this->menus = new ArrayCollection();
+        $this->boissons = new ArrayCollection();
+        $this->portionFrites = new ArrayCollection();
     }
 
     
@@ -124,6 +134,66 @@ class Gestionnaire extends User
             // set the owning side to null (unless already changed)
             if ($menu->getGestionnaire() === $this) {
                 $menu->setGestionnaire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Boisson>
+     */
+    public function getBoissons(): Collection
+    {
+        return $this->boissons;
+    }
+
+    public function addBoisson(Boisson $boisson): self
+    {
+        if (!$this->boissons->contains($boisson)) {
+            $this->boissons[] = $boisson;
+            $boisson->setGestionnaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoisson(Boisson $boisson): self
+    {
+        if ($this->boissons->removeElement($boisson)) {
+            // set the owning side to null (unless already changed)
+            if ($boisson->getGestionnaire() === $this) {
+                $boisson->setGestionnaire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PortionFrite>
+     */
+    public function getPortionFrites(): Collection
+    {
+        return $this->portionFrites;
+    }
+
+    public function addPortionFrite(PortionFrite $portionFrite): self
+    {
+        if (!$this->portionFrites->contains($portionFrite)) {
+            $this->portionFrites[] = $portionFrite;
+            $portionFrite->setGestionnaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortionFrite(PortionFrite $portionFrite): self
+    {
+        if ($this->portionFrites->removeElement($portionFrite)) {
+            // set the owning side to null (unless already changed)
+            if ($portionFrite->getGestionnaire() === $this) {
+                $portionFrite->setGestionnaire(null);
             }
         }
 

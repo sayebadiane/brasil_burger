@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\ProduitRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Entity\Commande;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 
@@ -16,18 +18,23 @@ class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["burger:read:simple"])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
+    #[Groups(["burger:read:simple", "burger:read:all","write"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $nom;
 
+    #[Groups(["burger:read:simple", "burger:read:all","write"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $image;
 
+    #[Groups(["burger:read:simple","burger:read:all","write"])]
     #[ORM\Column(type: 'float')]
     private $prix;
 
+    #[Groups(["burger:read:all","write"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $etat;
 
