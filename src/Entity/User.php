@@ -13,20 +13,32 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "discr", type: "string")]
 #[ORM\DiscriminatorMap(["user" => "User", "gestionnaire" => "Gestionnaire", "client"=>"Client", "livreur"=>"Livreur"])]
-#[ApiResource()] 
+#[ApiResource(
+    collectionOperations: [
+        "get" ,
+        "post_register" => [
+          "method"=>"post",
+          'path'=>'/register',
+            'normalization_context' => ['groups' => 'user:read:simple']
+        ]
+    ],
+    
+
+)] 
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
 
-    #[Groups(["burger:read:all","write"])]
+    #[Groups(["burger:read:all","write","user:read:simple"])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["burger:read:all"])]
+    #[Groups(["burger:read:all","user:read:simple"])]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $login;
 
+    #[Groups(["user:read:simple"])]
     #[ORM\Column(type: 'json')]
     private $roles = [];
 

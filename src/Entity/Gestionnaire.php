@@ -6,10 +6,13 @@ use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\GestionnaireRepository;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: GestionnaireRepository::class)]
+
+#[ApiResource()] 
 class Gestionnaire extends User
 {
 
@@ -36,6 +39,7 @@ class Gestionnaire extends User
         $this->menus = new ArrayCollection();
         $this->boissons = new ArrayCollection();
         $this->portionFrites = new ArrayCollection();
+        $this->setRoles(["ROLE_GESTIONNAIRE"]);
     }
 
     

@@ -6,12 +6,15 @@ use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
+#[ApiResource()]
 class Client extends User
 {
-    
+   
     #[ORM\Column(type: 'string', length: 255)]
     private $adresse;
 
@@ -24,6 +27,7 @@ class Client extends User
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
+        $this->setRoles(["ROLE_CLIENT"]);
     }
 
     public function getAdresse(): ?string
