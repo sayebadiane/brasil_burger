@@ -2,17 +2,49 @@
 
 namespace App\Entity;
 
-use App\Repository\PortionFriteRepository;
-use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Produit;
+use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PortionFriteRepository;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PortionFriteRepository::class)]
+#[ApiResource(
+    collectionOperations:
+    [
+        "post"=>[
+            "security" => "is_granted('ROLE_GESTIONNAIRE')",
+            "security_message" => "vous n'avvez pas assez a cette ressouce"
+         ],
+        "get"=>[
+            'method' => 'get',
+            'status' => 200,
+            'normalization_context' => ['groups' => 'frite:read:simple']
+        
+        ]
+    ],
+    itemOperations: [
+        "put"=>[
+            "security" => "is_granted('ROLE_GESTIONNAIRE')",
+            "security_message" => "vous n'avvez pas assez a cette ressouce"
+
+        ],
+        "get"=>[
+            'method' => 'get',
+            'status' => 200,
+            'normalization_context' => ['groups' => 'frite:read:all']
+
+        ]
+
+    ]
+)]
 class PortionFrite extends Produit
 {
     #[ORM\ManyToOne(targetEntity: Complements::class, inversedBy: 'portionFrites')]
     private $complement;
 
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'portionFrites')]
+    #[Groups(["frite:read:all"])]
     private $gestionnaire;
 
     // #[ORM\Id]

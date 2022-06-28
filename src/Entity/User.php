@@ -20,8 +20,13 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
           "method"=>"post",
           'path'=>'/register',
             'normalization_context' => ['groups' => 'user:read:simple']
+        ],
+        "add"=>[
+            'method'=> 'get',
+            "path"=> "/email",
+            "controller"=> MailerController::class,
         ]
-    ],
+    ]
     
 
 )] 
@@ -30,11 +35,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
 
-    #[Groups(["burger:read:all","write","user:read:simple"])]
+    #[Groups(["burger:read:all","write","user:read:simple","menu-write"])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["burger:read:all","user:read:simple"])]
+    #[Groups(["burger:read:all","user:read:simple",'menu:get:all',"frite:read:all"])]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $login;
 
@@ -44,6 +49,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string')]
     private $password;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $token;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isverify=false;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private $expiredAt;
 
     public function getId(): ?int
     {
@@ -113,5 +127,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function isIsverify(): ?bool
+    {
+        return $this->isverify;
+    }
+
+    public function setIsverify(bool $isverify): self
+    {
+        $this->isverify = $isverify;
+
+        return $this;
+    }
+
+    public function getExpiredAt(): ?\DateTimeInterface
+    {
+        return $this->expiredAt;
+    }
+
+    public function setExpiredAt(?\DateTimeInterface $expiredAt): self
+    {
+        $this->expiredAt = $expiredAt;
+
+        return $this;
     }
 }

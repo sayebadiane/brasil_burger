@@ -8,6 +8,7 @@ use App\Repository\BurgerRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BurgerRepository::class)]
 #[ApiResource(
@@ -37,8 +38,8 @@ use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\Response;
             'method' => 'get',
             'status' => 200,
             'normalization_context' => ['groups' => 'burger:read:all']
-
-        ]
+        ],
+        "delete"
     ]
 )]
 class Burger extends Produit

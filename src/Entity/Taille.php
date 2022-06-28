@@ -2,12 +2,33 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\TailleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TailleRepository::class)]
+#[ApiResource(
+    collectionOperations:[
+        "post"=>[
+            "security" => "is_granted('ROLE_GESTIONNAIRE')",
+            "security_message" => "vous n'avvez pas assez a cette ressouce"
+        
+
+        ],
+        "get"=>[
+            'normalization_context' => ['groups' => 'taille:read:simple']
+
+
+        ]
+    ],
+    itemOperations:[
+        "put",
+        "get"
+    ]
+)]
 class Taille
 {
     #[ORM\Id]
@@ -16,9 +37,11 @@ class Taille
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups("taille:read:simple")]
     private $libelle;
 
     #[ORM\Column(type: 'float')]
+    #[Groups("taille:read:simple")]
     private $prix;
 
     #[ORM\ManyToMany(targetEntity: Boisson::class, mappedBy: 'tailles')]

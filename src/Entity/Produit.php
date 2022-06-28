@@ -8,6 +8,9 @@ use App\Repository\ProduitRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 
@@ -22,19 +25,23 @@ class Produit
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["burger:read:simple", "burger:read:all","write"])]
+    #[Groups(["burger:read:simple", "burger:read:all","write","menu-write",'get-write','menu:get:all',"frite:read:simple","frite:read:all"])]
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "Le nom est Obligatoire")]
     private $nom;
 
-    #[Groups(["burger:read:simple", "burger:read:all","write"])]
+    #[Groups(["burger:read:simple", "burger:read:all","write","menu-write",'get-write','menu:get:all',"frite:read:simple","frite:read:all"])]
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "L' image est Obligatoire")]
+
     private $image;
 
-    #[Groups(["burger:read:simple","burger:read:all","write"])]
+    #[Groups(["burger:read:simple","burger:read:all","write","menu-write",'get-write','menu:get:all',"frite:read:simple","frite:read:all"])]
     #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(message: "Le prix est Obligatoire")]
     private $prix;
 
-    #[Groups(["burger:read:all","write"])]
+    #[Groups(["burger:read:all","write","menu-write",'menu:get:all',"frite:read:all"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $etat;
 
