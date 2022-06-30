@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Produit;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\BurgerRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -20,10 +22,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
         ],
     "post"=>[
-        'denormalization_context' => ['groups' => 'write'],
-        'normalization_context' => ['groups' => 'burger:read:all'],
         "security" => "is_granted('ROLE_GESTIONNAIRE')",
-        "security_message" => "vous n'avvez pas assez a cette ressouce"
+        "security_message" => "vous n'avvez pas assez a cette ressouce",
+        'normalization_context' => ['groups' => 'burger:read:all']
         
 
 
@@ -46,9 +47,19 @@ class Burger extends Produit
 {
     #[ORM\ManyToOne(targetEntity: Catalogues::class, inversedBy: 'burgers')]
     private $catalogues;
+
     #[Groups(["burger:read:all", "write"])]
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'burgers')]
     private $gestionnaire;
+
+    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'burgers')]
+    private $menus;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->menus = new ArrayCollection();
+    }
 
     public function getCatalogues(): ?Catalogues
     {
@@ -70,6 +81,33 @@ class Burger extends Produit
     public function setGestionnaire(?Gestionnaire $gestionnaire): self
     {
         $this->gestionnaire = $gestionnaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+            $menu->addBurger($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        if ($this->menus->removeElement($menu)) {
+            $menu->removeBurger($this);
+        }
 
         return $this;
     }

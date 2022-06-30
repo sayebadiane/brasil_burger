@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Entity\Produit;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PortionFriteRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -47,6 +49,15 @@ class PortionFrite extends Produit
     #[Groups(["frite:read:all"])]
     private $gestionnaire;
 
+    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'portionfrites')]
+    private $menus;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->menus = new ArrayCollection();
+    }
+
     // #[ORM\Id]
     // #[ORM\GeneratedValue]
     // #[ORM\Column(type: 'integer')]
@@ -77,6 +88,33 @@ class PortionFrite extends Produit
     public function setGestionnaire(?Gestionnaire $gestionnaire): self
     {
         $this->gestionnaire = $gestionnaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+            $menu->addPortionfrite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        if ($this->menus->removeElement($menu)) {
+            $menu->removePortionfrite($this);
+        }
 
         return $this;
     }

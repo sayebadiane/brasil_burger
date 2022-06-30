@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Commande;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProduitRepository;
@@ -16,36 +17,38 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "discr", type: "string")]
-#[ORM\DiscriminatorMap(["produit" => "Produit", "burger" => "Burger","menu"=>"Menu","boisson"=>"Boisson","PortionFrite"=>"PortionFrite"])]
+#[ORM\DiscriminatorMap(["produit" => "Produit", "burger" => "Burger", "menu" => "Menu", "boisson" => "Boisson", "PortionFrite" => "PortionFrite"])]
+#[ApiResource()]
 class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["burger:read:simple"])]
+    #[Groups(["burger:read:simple","menu-post"])]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    protected $id;
 
-    #[Groups(["burger:read:simple", "burger:read:all","write","menu-write",'get-write','menu:get:all',"frite:read:simple","frite:read:all"])]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le nom est Obligatoire")]
-    private $nom;
+    protected $nom;
 
-    #[Groups(["burger:read:simple", "burger:read:all","write","menu-write",'get-write','menu:get:all',"frite:read:simple","frite:read:all"])]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "L' image est Obligatoire")]
 
-    private $image;
+    protected $image;
 
-    #[Groups(["burger:read:simple","burger:read:all","write","menu-write",'get-write','menu:get:all',"frite:read:simple","frite:read:all"])]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post", "boisson-post","boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'float')]
     #[Assert\NotBlank(message: "Le prix est Obligatoire")]
-    private $prix;
+    protected $prix;
 
-    #[Groups(["burger:read:all","write","menu-write",'menu:get:all',"frite:read:all"])]
+    #[Groups(["burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get"])]
     #[ORM\Column(type: 'string', length: 255)]
-    private $etat;
+    protected $etat;
 
     #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'produits')]
+    #[ORM\JoinColumn(nullable: true)]
     private $commandes;
 
     public function __construct()

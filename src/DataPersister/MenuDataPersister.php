@@ -5,7 +5,6 @@ use App\Entity\Menu;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MenuDataPersister implements DataPersisterInterface
 {
@@ -24,6 +23,9 @@ class MenuDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
+        // dd($data);
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
     }
     public function remove($data)
     {

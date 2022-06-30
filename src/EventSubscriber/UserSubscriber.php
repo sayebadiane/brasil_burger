@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Boisson;
 use App\Entity\Menu;
 use App\Entity\Burger;
 use App\Entity\PortionFrite;
@@ -48,6 +49,9 @@ class UserSubscriber implements EventSubscriberInterface
         {
             $args->getObject()->setGestionnaire($this->getUser());
         
+        } 
+        else if ($args->getObject() instanceof Boisson) {
+            $args->getObject()->setGestionnaire($this->getUser());
         } 
     
     }

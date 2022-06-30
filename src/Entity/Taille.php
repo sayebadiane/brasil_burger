@@ -26,7 +26,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations:[
         "put",
-        "get"
+        "get"=>[
+
+            'normalization_context' => ['groups' => 'menu:get:all']
+
+
+        ]
     ]
 )]
 class Taille
@@ -34,14 +39,15 @@ class Taille
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["menu-post", 'get-write',"boisson-post","boisson-get", 'boisson-get-simple', 'menu:get:all'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups("taille:read:simple")]
+    #[Groups('menu:get:all',"taille:read:simple","menu-get",'get-write',"boisson-get",'boisson-get-simple')]
     private $libelle;
 
     #[ORM\Column(type: 'float')]
-    #[Groups("taille:read:simple")]
+    #[Groups('menu:get:all',"taille:read:simple",'get-write',"boisson-get",'boisson-get-simple')]
     private $prix;
 
     #[ORM\ManyToMany(targetEntity: Boisson::class, mappedBy: 'tailles')]
@@ -50,9 +56,13 @@ class Taille
     #[ORM\ManyToOne(targetEntity: Complements::class, inversedBy: 'tailles')]
     private $complement;
 
+    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'tailles')]
+    private $menus;
+
     public function __construct()
     {
         $this->boissons = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,6 +129,33 @@ class Taille
     public function setComplement(?Complements $complement): self
     {
         $this->complement = $complement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+            $menu->addTaille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        if ($this->menus->removeElement($menu)) {
+            $menu->removeTaille($this);
+        }
 
         return $this;
     }

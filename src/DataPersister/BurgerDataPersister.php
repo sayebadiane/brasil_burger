@@ -25,7 +25,8 @@ class BurgerDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
-       
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
     }
     public function remove($data)
     {

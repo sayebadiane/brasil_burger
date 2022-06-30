@@ -18,14 +18,11 @@ class Catalogues
     #[ORM\OneToMany(mappedBy: 'catalogues', targetEntity: Burger::class)]
     private $burgers;
 
-    #[ORM\OneToMany(mappedBy: 'catalogues', targetEntity: Menu::class)]
-    private $menus;
-
+    
 
     public function __construct()
     {
         $this->burgers = new ArrayCollection();
-        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -57,36 +54,6 @@ class Catalogues
             // set the owning side to null (unless already changed)
             if ($burger->getCatalogues() === $this) {
                 $burger->setCatalogues(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Menu>
-     */
-    public function getMenus(): Collection
-    {
-        return $this->menus;
-    }
-
-    public function addMenu(Menu $menu): self
-    {
-        if (!$this->menus->contains($menu)) {
-            $this->menus[] = $menu;
-            $menu->setCatalogues($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMenu(Menu $menu): self
-    {
-        if ($this->menus->removeElement($menu)) {
-            // set the owning side to null (unless already changed)
-            if ($menu->getCatalogues() === $this) {
-                $menu->setCatalogues(null);
             }
         }
 
