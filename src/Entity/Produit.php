@@ -38,8 +38,8 @@ class Produit
 
     protected $image;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-post","boisson-get", 'boisson-get-simple'])]
-    #[ORM\Column(type: 'float')]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
+    #[ORM\Column(type: 'float',nullable:true)]
     // #[Assert\NotBlank(message: "Le prix est Obligatoire")]
     protected $prix;
 

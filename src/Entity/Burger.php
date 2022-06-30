@@ -45,8 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Burger extends Produit
 {
-    #[ORM\ManyToOne(targetEntity: Catalogues::class, inversedBy: 'burgers')]
-    private $catalogues;
+    
 
     #[Groups(["burger:read:all", "write"])]
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'burgers')]
@@ -61,17 +60,17 @@ class Burger extends Produit
         $this->menus = new ArrayCollection();
     }
 
-    public function getCatalogues(): ?Catalogues
-    {
-        return $this->catalogues;
-    }
+    // public function getCatalogues(): ?Catalogues
+    // {
+    //     return $this->catalogues;
+    // }
 
-    public function setCatalogues(?Catalogues $catalogues): self
-    {
-        $this->catalogues = $catalogues;
+    // public function setCatalogues(?Catalogues $catalogues): self
+    // {
+    //     $this->catalogues = $catalogues;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getGestionnaire(): ?Gestionnaire
     {

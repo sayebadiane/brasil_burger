@@ -1,28 +1,31 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
+use App\Repository\BurgerRepository;
 use App\Repository\CataloguesRepository;
+use App\Repository\MenuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CataloguesRepository::class)]
+#[ApiResource()]
 class Catalogues
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    
     private $id;
 
     #[ORM\OneToMany(mappedBy: 'catalogues', targetEntity: Burger::class)]
     private $burgers;
 
-    
+    #[ORM\OneToMany(mappedBy: 'catalogues', targetEntity: Menu::class)]
+    private $menus;
 
-    public function __construct()
+    
+    public function __construct(BurgerRepository $burgerRepository,MenuRepository $menuRepository)
     {
-        $this->burgers = new ArrayCollection();
+        $this->burgers = ["burgers"=> $burgerRepository->findBy(["etat" => "disponible"])];
+        $this->menus =["menus" => $menuRepository->findBy(["etat" => "disponible"])];
     }
 
     public function getId(): ?int
@@ -30,35 +33,20 @@ class Catalogues
         return $this->id;
     }
 
-    /**
-     * @return Collection<int, Burger>
-     */
-    public function getBurgers(): Collection
+   
+    public function getBurgers()
     {
         return $this->burgers;
     }
 
-    public function addBurger(Burger $burger): self
+    public function getMenus()
     {
-        if (!$this->burgers->contains($burger)) {
-            $this->burgers[] = $burger;
-            $burger->setCatalogues($this);
-        }
-
-        return $this;
+        return $this->menus;
     }
 
-    public function removeBurger(Burger $burger): self
-    {
-        if ($this->burgers->removeElement($burger)) {
-            // set the owning side to null (unless already changed)
-            if ($burger->getCatalogues() === $this) {
-                $burger->setCatalogues(null);
-            }
-        }
+   
 
-        return $this;
-    }
+    
 
 
 }

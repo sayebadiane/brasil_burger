@@ -25,7 +25,7 @@ class ProduitDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
-        // dd($data);
+        //  dd($data);
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }

@@ -62,6 +62,9 @@ class Menu extends Produit
     #[ORM\JoinColumn(nullable:true)]
     #[Groups(["menu-post", "menu:get:all"])]
     private $tailles;
+
+    // #[ORM\ManyToOne(targetEntity: Catalogues::class, inversedBy: 'menus')]
+    // private $catalogues;
     public function __construct()
     {
         parent::__construct();
@@ -155,4 +158,16 @@ class Menu extends Produit
 
         return $this;
     }
+
+    // public function getCatalogues(): ?Catalogues
+    // {
+    //     return $this->catalogues;
+    // }
+
+    // public function setCatalogues(?Catalogues $catalogues): self
+    // {
+    //     $this->catalogues = $catalogues;
+
+    //     return $this;
+    // }
 }
