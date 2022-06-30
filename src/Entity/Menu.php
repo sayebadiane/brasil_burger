@@ -30,6 +30,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations:[
         "put" => [
+            'denormalization_context' => ['groups' => 'menu-post'],
             "security" => "is_granted('ROLE_GESTIONNAIRE')",
             "security_message" => "vous n'avvez pas assez a cette ressouce"
         ],
@@ -46,7 +47,7 @@ class Menu extends Produit
 {
 
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'menus')]
-    #[Groups(["menu-post"])]
+    #[Groups(["menu-post", "menu:get:all"])]
     private $gestionnaire;
 
     #[ORM\ManyToMany(targetEntity: Burger::class, inversedBy: 'menus')]

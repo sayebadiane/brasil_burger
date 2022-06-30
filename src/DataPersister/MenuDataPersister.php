@@ -23,7 +23,27 @@ class MenuDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
-        // dd($data);
+      $burgers= ($data->getBurgers());
+      $prixmenu=0;
+    //   $prixburger=0;
+    //   $prixportionfrite=0;
+    //   $prixtaille=0;
+      foreach ($burgers  as $burger) {
+         $prixmenu =$prixmenu+ $burger->getPrix();
+       
+      }
+         $portiofrites=$data->getPortionfrites();
+      foreach ($portiofrites as $key => $portiofrite) {
+            $prixmenu=$prixmenu+ $portiofrite->getPrix();
+      }
+      $tailles=$data->getTailles();
+      foreach ($tailles as $key => $taille) {
+
+            $prixmenu=$prixmenu+$taille->getPrix();
+      }
+
+    //    $prixmenu=$prixburger+$prixportionfrite+$prixtaille;
+        $data->setPrix($prixmenu);
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }
