@@ -15,14 +15,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     collectionOperations:[
         "get"=>[
+
             'normalization_context' => ['groups' => 'get-write'],
+            'security'=>"is_granted('MENU_ALL',_api_resource_class)"
         ],
         "post"=>[
+            
+            "security_post_denormalize" => "is_granted('AJOUTER_MENU', object)",
+            "security_post_denormalize_message"=> "vous n'avez pas le droit d' accées",
+                
             "method"=>"post",
+
             'denormalization_context' => ['groups' => 'menu-post' ],
+
             'normalization_context' => ['groups' => 'get-write'],
-            "security" => "is_granted('ROLE_GESTIONNAIRE')",
-            "security_message" => "vous n'avvez pas assez a cette ressouce"
+           
         ],
        
        
@@ -31,13 +38,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
     itemOperations:[
         "put" => [
             'denormalization_context' => ['groups' => 'menu-post'],
-            "security" => "is_granted('ROLE_GESTIONNAIRE')",
-            "security_message" => "vous n'avvez pas assez a cette ressouce"
+            "access_control" => "is_granted('EDIT', previous_object)",
         ],
         "get" => [
             'method' => 'get',
             'status' => 200,
-            'normalization_context' => ['groups' => 'menu:get:all']
+            'normalization_context' => ['groups' => 'menu:get:all'],
+            'security'=> "is_granted('AJOUTER_MENU', object)",
+            'security_message'=>" vous n' avez pas accées"
         ],
          "delete"
     ]

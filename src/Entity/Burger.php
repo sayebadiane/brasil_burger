@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BurgerRepository::class)]
 #[ApiResource(
+    attributes: ["pagination_enabled" => true],
     collectionOperations:[
         "get"=>[
             'method'=>'get',

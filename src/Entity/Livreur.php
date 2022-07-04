@@ -6,18 +6,32 @@ use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\LivreurRepository;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 #[ORM\Entity(repositoryClass: LivreurRepository::class)]
+#[ApiResource()]
+#[UniqueEntity(
+    fields: 'matriculeMoto',
+    message: "le matriculeMoto de la zone doit etre unique"
+)]
 class Livreur extends User
 {
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "Le matricule est obligatoire")]
     private $matriculeMoto;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "Le telephone est obligatoire")]
+
     private $telephone;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: "L'etat est obligatoire")]
+
     private $etat;
 
     #[ORM\OneToMany(mappedBy: 'livreur', targetEntity: Livraison::class)]

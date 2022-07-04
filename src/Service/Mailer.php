@@ -1,19 +1,17 @@
 <?php
-namespace App\service;
+namespace App\Service;
 
 use Symfony\Component\Mime\Address;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 
-class Mailer{
-    /**
-     * @var MailerInterface
-     */
-    private $mailer;
-   public function __construct(MailerInterface $mailer){
-    $this->mailer= $mailer;
-
-   }
+class Mailer
+{
+    private MailerInterface $mailer;
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->mailer= $mailer;
+    }
     public function sendEmail($email, $token)
     {
         $email = (new TemplatedEmail())
