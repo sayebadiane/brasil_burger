@@ -3,14 +3,15 @@
 namespace App\Entity;
 
 use App\Entity\Produit;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\MenuRepository;
 use PhpParser\ErrorHandler\Collecting;
+use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
@@ -195,7 +196,18 @@ class Menu extends Produit
         return $this;
     }
 
-   
 
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $portion=count($this->getMenuPortionFrites()) ;
+        $boison=count($this->getMenuTailles());
+        
+        if ($portion==0 && $boison==0) {
+            $context
+            ->buildViolation('on doit avoire obligatoirement une boisson ou une portion de frite dans un menu')
+            ->addViolation();
+        }
+    }
    
 }
