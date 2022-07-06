@@ -2,15 +2,16 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use App\Entity\Commande;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProduitRepository;
 use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
@@ -18,6 +19,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name: "discr", type: "string")]
 #[ORM\DiscriminatorMap(["produit" => "Produit", "burger" => "Burger", "menu" => "Menu", "boisson" => "Boisson", "PortionFrite" => "PortionFrite"])]
+#[UniqueEntity(
+    fields: 'nom',
+    message: "le nom du produit doit etre unique"
+)]
 #[ApiResource()]
 class Produit
 {

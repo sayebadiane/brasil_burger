@@ -10,6 +10,8 @@ use App\Repository\MenuRepository;
 use PhpParser\ErrorHandler\Collecting;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 #[ApiResource(
@@ -57,28 +59,35 @@ class Menu extends Produit
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'menus')]
     #[Groups(["menu-post", "menu:get:all"])]
     private $gestionnaire;
+    // #[ORM\ManyToMany(targetEntity: PortionFrite::class, inversedBy: 'menus')]
+    // #[ORM\JoinColumn(nullable: true)]
+    // #[Groups(["menu-post","menu:get:all"])]
+    // private $portionfrites;
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBurger::class,cascade:['persist'])]
+    #[Groups(["menu-post",'get-write'])]
+    #[Assert\Valid]
+    #[Assert\Count(["min" => 1, "minMessage" => "on ne peut pas enregistrer menu sans burger"])]
+    private $menuBurgers;
 
-    #[ORM\ManyToMany(targetEntity: Burger::class, inversedBy: 'menus')]
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuTaille::class,cascade:['persist'])]
     #[Groups(["menu-post"])]
-    private $burgers;
+    #[Assert\Valid]
+    private $menuTailles;
 
-    #[ORM\ManyToMany(targetEntity: PortionFrite::class, inversedBy: 'menus')]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["menu-post","menu:get:all"])]
-    private $portionfrites;
-    #[ORM\ManyToMany(targetEntity: Taille::class, inversedBy: 'menus')]
-    #[ORM\JoinColumn(nullable:true)]
-    #[Groups(["menu-post", "menu:get:all"])]
-    private $tailles;
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuPortionFrite::class,cascade:['persist'])]
+    #[Groups(["menu-post"])]
+    #[Assert\Valid]
+    private $menuPortionFrites;
 
-    // #[ORM\ManyToOne(targetEntity: Catalogues::class, inversedBy: 'menus')]
-    // private $catalogues;
+   
+
     public function __construct()
     {
         parent::__construct();
-        $this->burgers = new ArrayCollection();
-        $this->portionfrites = new ArrayCollection();
-        $this->tailles = new ArrayCollection();
+        // $this->portionfrites = new ArrayCollection();
+        $this->menuBurgers = new ArrayCollection();
+        $this->menuTailles = new ArrayCollection();
+        $this->menuPortionFrites = new ArrayCollection();
     }
 
     
@@ -94,88 +103,99 @@ class Menu extends Produit
 
         return $this;
     }
-
     /**
-     * @return Collection<int, Burger>
+     * @return Collection<int, MenuBurger>
      */
-    public function getBurgers(): Collection
+    public function getMenuBurgers(): Collection
     {
-        return $this->burgers;
+        return $this->menuBurgers;
     }
 
-    public function addBurger(Burger $burger): self
+    public function addMenuBurger(MenuBurger $menuBurger): self
     {
-        if (!$this->burgers->contains($burger)) {
-            $this->burgers[] = $burger;
+        if (!$this->menuBurgers->contains($menuBurger)) {
+            $this->menuBurgers[] = $menuBurger;
+            $menuBurger->setMenu($this);
+        }
+        
+
+        return $this; 
+    }
+
+    public function removeMenuBurger(MenuBurger $menuBurger): self
+    {
+        if ($this->menuBurgers->removeElement($menuBurger)) {
+            // set the owning side to null (unless already changed)
+            if ($menuBurger->getMenu() === $this) {
+                $menuBurger->setMenu(null);
+            }
         }
 
         return $this;
     }
 
-    public function removeBurger(Burger $burger): self
-    {
-        $this->burgers->removeElement($burger);
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, PortionFrite>
+     * @return Collection<int, MenuTaille>
      */
-    public function getPortionfrites(): Collection
+    public function getMenuTailles(): Collection
     {
-        return $this->portionfrites;
+        return $this->menuTailles;
     }
 
-    public function addPortionfrite(PortionFrite $portionfrite): self
+    public function addMenuTaille(MenuTaille $menuTaille): self
     {
-        if (!$this->portionfrites->contains($portionfrite)) {
-            $this->portionfrites[] = $portionfrite;
+        if (!$this->menuTailles->contains($menuTaille)) {
+            $this->menuTailles[] = $menuTaille;
+            $menuTaille->setMenu($this);
         }
 
         return $this;
     }
 
-    public function removePortionfrite(PortionFrite $portionfrite): self
+    public function removeMenuTaille(MenuTaille $menuTaille): self
     {
-        $this->portionfrites->removeElement($portionfrite);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Taille>
-     */
-    public function getTailles(): Collection
-    {
-        return $this->tailles;
-    }
-
-    public function addTaille(Taille $taille): self
-    {
-        if (!$this->tailles->contains($taille)) {
-            $this->tailles[] = $taille;
+        if ($this->menuTailles->removeElement($menuTaille)) {
+            // set the owning side to null (unless already changed)
+            if ($menuTaille->getMenu() === $this) {
+                $menuTaille->setMenu(null);
+            }
         }
 
         return $this;
     }
 
-    public function removeTaille(Taille $taille): self
+    /**
+     * @return Collection<int, MenuPortionFrite>
+     */
+    public function getMenuPortionFrites(): Collection
     {
-        $this->tailles->removeElement($taille);
+        return $this->menuPortionFrites;
+    }
+
+    public function addMenuPortionFrite(MenuPortionFrite $menuPortionFrite): self
+    {
+        if (!$this->menuPortionFrites->contains($menuPortionFrite)) {
+            $this->menuPortionFrites[] = $menuPortionFrite;
+            $menuPortionFrite->setMenu($this);
+        }
 
         return $this;
     }
 
-    // public function getCatalogues(): ?Catalogues
-    // {
-    //     return $this->catalogues;
-    // }
+    public function removeMenuPortionFrite(MenuPortionFrite $menuPortionFrite): self
+    {
+        if ($this->menuPortionFrites->removeElement($menuPortionFrite)) {
+            // set the owning side to null (unless already changed)
+            if ($menuPortionFrite->getMenu() === $this) {
+                $menuPortionFrite->setMenu(null);
+            }
+        }
+       
 
-    // public function setCatalogues(?Catalogues $catalogues): self
-    // {
-    //     $this->catalogues = $catalogues;
+        return $this;
+    }
 
-    //     return $this;
-    // }
+   
+
+   
 }

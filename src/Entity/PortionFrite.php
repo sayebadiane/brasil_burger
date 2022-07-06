@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entity;
-
 use App\Entity\Produit;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -49,13 +48,18 @@ class PortionFrite extends Produit
     #[Groups(["frite:read:all"])]
     private $gestionnaire;
 
-    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'portionfrites')]
-    private $menus;
+    #[ORM\OneToMany(mappedBy: 'portionfrite', targetEntity: MenuPortionFrite::class)]
+    private $menuPortionFrites;
+
+
+
+   
 
     public function __construct()
     {
         parent::__construct();
-        $this->menus = new ArrayCollection();
+        // $this->menus = new ArrayCollection();
+        $this->menuPortionFrites = new ArrayCollection();
     }
 
     // #[ORM\Id]
@@ -93,29 +97,40 @@ class PortionFrite extends Produit
     }
 
     /**
-     * @return Collection<int, Menu>
+     * @return Collection<int, MenuPortionFrite>
      */
-    public function getMenus(): Collection
+    public function getMenuPortionFrites(): Collection
     {
-        return $this->menus;
+        return $this->menuPortionFrites;
     }
 
-    public function addMenu(Menu $menu): self
+    public function addMenuPortionFrite(MenuPortionFrite $menuPortionFrite): self
     {
-        if (!$this->menus->contains($menu)) {
-            $this->menus[] = $menu;
-            $menu->addPortionfrite($this);
+        if (!$this->menuPortionFrites->contains($menuPortionFrite)) {
+            $this->menuPortionFrites[] = $menuPortionFrite;
+            $menuPortionFrite->setPortionfrite($this);
         }
 
         return $this;
     }
 
-    public function removeMenu(Menu $menu): self
+    public function removeMenuPortionFrite(MenuPortionFrite $menuPortionFrite): self
     {
-        if ($this->menus->removeElement($menu)) {
-            $menu->removePortionfrite($this);
+        if ($this->menuPortionFrites->removeElement($menuPortionFrite)) {
+            // set the owning side to null (unless already changed)
+            if ($menuPortionFrite->getPortionfrite() === $this) {
+                $menuPortionFrite->setPortionfrite(null);
+            }
         }
 
         return $this;
     }
+
+   
+
+  
+
+    
+
+   
 }

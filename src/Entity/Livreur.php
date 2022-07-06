@@ -16,7 +16,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ApiResource()]
 #[UniqueEntity(
     fields: 'matriculeMoto',
-    message: "le matriculeMoto de la zone doit etre unique"
+    message: "le matriculeMoto du livreur doit etre unique"
+)]
+#[UniqueEntity(
+    fields: 'telephone',
+    message: "le telephone dulivreure doit etre unique"
 )]
 class Livreur extends User
 {
@@ -40,6 +44,7 @@ class Livreur extends User
     public function __construct()
     {
         $this->livraisons = new ArrayCollection();
+        $this->setRoles(["ROLE_LIVREUR"]);
     }
 
    

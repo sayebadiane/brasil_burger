@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,6 +10,20 @@ use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Nullable;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
+#[ApiResource(
+    collectionOperations:[
+        "post"=>[
+            "security_post_denormalize" => "is_granted('COMMANDE_CREATE', object)",
+            "security_post_denormalize_message" => "vous n'avez pas le droit d' accées",
+                
+
+        ],
+        "get"
+    ],
+    itemOperations:[
+        "put"
+    ]
+)]
 class Commande
 {
     #[ORM\Id]

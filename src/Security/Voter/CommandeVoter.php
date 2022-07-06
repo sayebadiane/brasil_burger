@@ -44,19 +44,18 @@ class CommandeVoter extends Voter
 
         switch ($attribute) {
             case 'COMMANDE_CREATE':
-                if ($this->canAjouter($commande,$user)) {
+                if ($this->canAjouter($user)) {
                     return true;
                 }  // only admins can create books
                 break;
-            case 'BOOK_READ':
                 /** ... other autorization rules ... **/
         }
 
         return false;
 
     }
-    private function canAjouter(Commande $commande ,User $user)
+    private function canAjouter(User $user)
     {
-        return in_array('ROLE_GESTIONNAIRE',$user->getRoles());
+        return in_array('ROLE_CLIENT',$user->getRoles());
     }
 }
