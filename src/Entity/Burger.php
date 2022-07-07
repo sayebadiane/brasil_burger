@@ -94,32 +94,8 @@ class Burger extends Produit
         return $this;
     }
 
-    // /**
-    //  * @return Collection<int, Menu>
-    //  */
-    // public function getMenus(): Collection
-    // {
-    //     return $this->menus;
-    // }
-
-    // public function addMenu(Menu $menu): self
-    // {
-    //     if (!$this->menus->contains($menu)) {
-    //         $this->menus[] = $menu;
-    //         $menu->addBurger($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeMenu(Menu $menu): self
-    // {
-    //     if ($this->menus->removeElement($menu)) {
-    //         $menu->removeBurger($this);
-    //     }
-
-    //     return $this;
-    // }
+ 
+    
 
     /**
      * @return Collection<int, MenuBurger>

@@ -23,13 +23,14 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
             'security'=>"is_granted('MENU_ALL',_api_resource_class)"
         ],
         "post"=>[
-            
             "security_post_denormalize" => "is_granted('AJOUTER_MENU', object)",
             "security_post_denormalize_message"=> "vous n'avez pas le droit d' accées",
                 
             "method"=>"post",
+            
 
             'denormalization_context' => ['groups' => 'menu-post' ],
+           
 
             'normalization_context' => ['groups' => 'get-write'],
            
@@ -60,10 +61,7 @@ class Menu extends Produit
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'menus')]
     #[Groups(["menu-post", "menu:get:all"])]
     private $gestionnaire;
-    // #[ORM\ManyToMany(targetEntity: PortionFrite::class, inversedBy: 'menus')]
-    // #[ORM\JoinColumn(nullable: true)]
-    // #[Groups(["menu-post","menu:get:all"])]
-    // private $portionfrites;
+
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBurger::class,cascade:['persist'])]
     #[Groups(["menu-post",'get-write'])]
     #[Assert\Valid]
@@ -208,6 +206,29 @@ class Menu extends Produit
             ->buildViolation('on doit avoire obligatoirement une boisson ou une portion de frite dans un menu')
             ->addViolation();
         }
+          if( $this->doublon()!=true){
+            $context
+            ->buildViolation('vous ne pouvais pas choisir deux menu de meme id')
+            ->addViolation();
+
+          }
     }
+    public  function doublon(): bool
+    {
+        $i = count($this->getMenuBurgers());
+
+        $tab = [];
+        for ($j = 0; $j < $i; $j++) {
+            // $tab[$j] = $data->getMenuBurgers()[$j]->getBurger()->getId();
+            $tab[$j] = ($this->getMenuBurgers()[$j]->getBurger()->getId());
+        }
+        $count1 = count(array_unique($tab));
+
+        if ($i != $count1) {
+            return false;
+        } else {
+            return true;
+        }
+    }  
    
 }

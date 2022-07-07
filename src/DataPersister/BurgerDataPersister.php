@@ -29,6 +29,8 @@ class BurgerDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
+        // dd($data);
+
        $data->setImage($this->fileUploader->upload($data->getImagefile()));
         $this->entityManager->persist($data);
         $this->entityManager->flush();

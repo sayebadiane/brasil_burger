@@ -16,6 +16,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
         "post"=>[ 
             "security" => "is_granted('ROLE_GESTIONNAIRE')",
             "security_message" => "vous n'avvez pas assez a cette ressouce",
+            'input_formats' => [
+                'multipart' => ['multipart/form-data'],
+            ],
             'denormalization_context' => ['groups' => 'boisson-post'],
             'normalization_context' => ['groups' => 'boisson-get']
 

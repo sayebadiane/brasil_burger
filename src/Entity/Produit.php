@@ -38,8 +38,10 @@ class Produit
     #[Assert\NotBlank(message: "Le nom est Obligatoire")]
     protected $nom;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'blob', length: 255)]
+    //#[Assert\NotBlank(message: "L'image est Obligatoire")]
+
     protected $image;
 
     #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
@@ -55,11 +57,12 @@ class Produit
     #[ORM\JoinColumn(nullable: true)]
     private $commandes;
 
-   #[Groups("burger-post")]
-   #[SerializedName("image")]
-  #[Assert\NotBlank(message: "L' image est Obligatoire")]
+   #[Groups("burger-post",'boisson-post')]
+  
+//    #[Assert\NotBlank(message: "L' image onnnnnnbb est Obligatoire")]
+    #[SerializedName("image")] 
+   protected File $imagefile;
 
-    protected File $imagefile;
 
     public function __construct()
     {
