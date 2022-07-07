@@ -3,6 +3,7 @@
 namespace App\DataPersister;
 
 use App\Entity\Burger;
+use App\Service\FileUploader;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
@@ -10,11 +11,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class BurgerDataPersister implements DataPersisterInterface
 {
+    private FileUploader $fileUploader;
     private EntityManagerInterface $entityManager;
     public function __construct(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        FileUploader $fileUploader
     ) {
         $this->entityManager = $entityManager;
+        $this->fileUploader= $fileUploader;
     }
     public function supports($data): bool
     {
@@ -25,6 +29,7 @@ class BurgerDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
+       $data->setImage($this->fileUploader->upload($data->getImagefile()));
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }

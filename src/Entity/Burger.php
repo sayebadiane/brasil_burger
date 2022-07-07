@@ -23,8 +23,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
         ],
     "post"=>[
+            'input_formats' => [
+                'multipart' => ['multipart/form-data'],
+            ],
         "security" => "is_granted('ROLE_GESTIONNAIRE')",
         "security_message" => "vous n'avvez pas assez a cette ressouce",
+                'denormalization_context' => ['groups' => 'burger-post'],
+
         'normalization_context' => ['groups' => 'burger:read:all']
         
 

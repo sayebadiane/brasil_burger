@@ -12,7 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+use Symfony\Component\HttpFoundation\File\File ;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 
@@ -32,29 +33,33 @@ class Produit
     #[ORM\Column(type: 'integer')]
     protected $id;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le nom est Obligatoire")]
     protected $nom;
 
     #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\NotBlank(message: "L' image est Obligatoire")]
-
+    #[ORM\Column(type: 'blob', length: 255)]
     protected $image;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
     #[ORM\Column(type: 'float',nullable:true)]
     // #[Assert\NotBlank(message: "Le prix est Obligatoire")]
     protected $prix;
 
-    #[Groups(["burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get"])]
+    #[Groups(['burger-post',"burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get"])]
     #[ORM\Column(type: 'string', length: 255)]
     protected $etat;
 
     #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'produits')]
     #[ORM\JoinColumn(nullable: true)]
     private $commandes;
+
+   #[Groups("burger-post")]
+   #[SerializedName("image")]
+  #[Assert\NotBlank(message: "L' image est Obligatoire")]
+
+    protected File $imagefile;
 
     public function __construct()
     {
@@ -80,6 +85,9 @@ class Produit
 
     public function getImage(): ?string
     {
+        if(is_resource($this->image)){
+            return base64_encode(stream_get_contents($this->image));
+        }
         return $this->image;
     }
 
@@ -137,6 +145,18 @@ class Produit
         if ($this->commandes->removeElement($commande)) {
             $commande->removeProduit($this);
         }
+
+        return $this;
+    }
+
+    public function getImagefile(): ?File
+    {
+        return $this->imagefile;
+    }
+
+    public function setImagefile(File $imagefile): self
+    {
+        $this->imagefile = $imagefile;
 
         return $this;
     }
