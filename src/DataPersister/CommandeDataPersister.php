@@ -1,18 +1,23 @@
 <?php
 namespace App\DataPersister;
+use DateTime;
 use App\Entity\Commande;
+use App\Service\NumeroCommande;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
-use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Symfony\Component\Console\Command\Command;
+use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 
 class CommandeDataPersister implements DataPersisterInterface
 {
     private EntityManagerInterface $entityManager;
+    private NumeroCommande $numerocommande;
     public function __construct(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        NumeroCommande $numerocommande
     ) {
         $this->entityManager = $entityManager;
+        $this->numerocommande= $numerocommande;
     }
     public function supports($data): bool
     {
@@ -24,8 +29,8 @@ class CommandeDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
-        // $data->setNumeroCommande("001");
-        // $data->setDate("2020");
+        $data->setNumeroCommande($this->numerocommande->uniqidReal());
+        $data->setDate(new DateTime());
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }

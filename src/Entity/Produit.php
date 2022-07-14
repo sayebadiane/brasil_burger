@@ -29,7 +29,7 @@ class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["burger:read:simple","menu-post"])]
+    #[Groups(["burger:read:simple","menu-post", 'commande-post', 'commande-get'])]
     #[ORM\Column(type: 'integer')]
     protected $id;
 
@@ -41,7 +41,6 @@ class Produit
     #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'blob', length: 255)]
     //#[Assert\NotBlank(message: "L'image est Obligatoire")]
-
     protected $image;
 
     #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
@@ -125,32 +124,32 @@ class Produit
         return $this;
     }
 
-    /**
-     * @return Collection<int, Commande>
-     */
-    public function getCommandes(): Collection
-    {
-        return $this->commandes;
-    }
+    // /**
+    //  * @return Collection<int, Commande>
+    //  */
+    // public function getCommandes(): Collection
+    // {
+    //     return $this->commandes;
+    // }
 
-    public function addCommande(Commande $commande): self
-    {
-        if (!$this->commandes->contains($commande)) {
-            $this->commandes[] = $commande;
-            $commande->addProduit($this);
-        }
+    // public function addCommande(Commande $commande): self
+    // {
+    //     if (!$this->commandes->contains($commande)) {
+    //         $this->commandes[] = $commande;
+    //         $commande->addProduit($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeCommande(Commande $commande): self
-    {
-        if ($this->commandes->removeElement($commande)) {
-            $commande->removeProduit($this);
-        }
+    // public function removeCommande(Commande $commande): self
+    // {
+    //     if ($this->commandes->removeElement($commande)) {
+    //         $commande->removeProduit($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getImagefile(): ?File
     {

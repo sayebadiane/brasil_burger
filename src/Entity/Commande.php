@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\CommandeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\CommandeRepository;
+use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
 use phpDocumentor\Reflection\Types\Nullable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 #[ApiResource(
@@ -15,13 +19,19 @@ use phpDocumentor\Reflection\Types\Nullable;
         "post"=>[
             "security_post_denormalize" => "is_granted('COMMANDE_CREATE', object)",
             "security_post_denormalize_message" => "vous n'avez pas le droit d' accées",
-                
+            'denormalization_context' => ['groups' => 'commande-post'],
+            'normalization_context' => ['groups' => 'commande-get']  
 
         ],
-        "get"
+        "get"=>[
+
+           
+
+        ]
     ],
     itemOperations:[
-        "put"
+        "put",
+        "get"
     ]
 )]
 class Commande
@@ -29,18 +39,21 @@ class Commande
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups('commande-get')]
     private $id;
-
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['commande-get'])]
     private $numeroCommande;
-
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'datetime')]
+    #[Groups(['commande-get'])]
     private $date;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['commande-post', 'commande-get'])]
     private $etat;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['commande-post', 'commande-get'])]
     private $montant;
 
     #[ORM\ManyToOne(targetEntity: Livraison::class, inversedBy: 'commandes')]
@@ -55,12 +68,24 @@ class Commande
     #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'commandes')]
     private $client;
 
-    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'commandes')]
-    private $produits;
+    #[ORM\OneToMany(mappedBy: 'commande', targetEntity: BurgerCommande::class,cascade:['persist'])]
+    #[Groups(['commande-post', 'commande-get'])]
+    #[Assert\Valid]
+    private $burgerCommandes;
+
+    #[ORM\OneToMany(mappedBy: 'commande', targetEntity: MenuCommande::class,cascade:['persist'])]
+    #[Groups(['commande-post', 'commande-get'])]
+    #[Assert\Valid]
+    private $menuCommandes;
+
+    // #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'commandes')]
+    // private $produits;
 
     public function __construct()
     {
         $this->produits = new ArrayCollection();
+        $this->burgerCommandes = new ArrayCollection();
+        $this->menuCommandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,27 +189,100 @@ class Commande
         return $this;
     }
 
+    // /**
+    //  * @return Collection<int, Produit>
+    //  */
+    // public function getProduits(): Collection
+    // {
+    //     return $this->produits;
+    // }
+
+    // public function addProduit(Produit $produit): self
+    // {
+    //     if (!$this->produits->contains($produit)) {
+    //         $this->produits[] = $produit;
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeProduit(Produit $produit): self
+    // {
+    //     $this->produits->removeElement($produit);
+
+    //     return $this;
+    // }
+
     /**
-     * @return Collection<int, Produit>
+     * @return Collection<int, BurgerCommande>
      */
-    public function getProduits(): Collection
+    public function getBurgerCommandes(): Collection
     {
-        return $this->produits;
+        return $this->burgerCommandes;
     }
 
-    public function addProduit(Produit $produit): self
+    public function addBurgerCommande(BurgerCommande $burgerCommande): self
     {
-        if (!$this->produits->contains($produit)) {
-            $this->produits[] = $produit;
+        if (!$this->burgerCommandes->contains($burgerCommande)) {
+            $this->burgerCommandes[] = $burgerCommande;
+            $burgerCommande->setCommande($this);
         }
 
         return $this;
     }
 
-    public function removeProduit(Produit $produit): self
+    public function removeBurgerCommande(BurgerCommande $burgerCommande): self
     {
-        $this->produits->removeElement($produit);
+        if ($this->burgerCommandes->removeElement($burgerCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($burgerCommande->getCommande() === $this) {
+                $burgerCommande->setCommande(null);
+            }
+        }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, MenuCommande>
+     */
+    public function getMenuCommandes(): Collection
+    {
+        return $this->menuCommandes;
+    }
+
+    public function addMenuCommande(MenuCommande $menuCommande): self
+    {
+        if (!$this->menuCommandes->contains($menuCommande)) {
+            $this->menuCommandes[] = $menuCommande;
+            $menuCommande->setCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenuCommande(MenuCommande $menuCommande): self
+    {
+        if ($this->menuCommandes->removeElement($menuCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($menuCommande->getCommande() === $this) {
+                $menuCommande->setCommande(null);
+            }
+        }
+
+        return $this;
+    }
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $menuCommande = count($this->getMenuCommandes());
+        $burgerCommande = count($this->getBurgerCommandes());
+
+        if ($menuCommande  == 0 && $burgerCommande  == 0) {
+            $context
+                ->buildViolation('une commande doit avoir obligatoirement un burger ou un menu ')
+                ->addViolation();
+        }
+       
     }
 }

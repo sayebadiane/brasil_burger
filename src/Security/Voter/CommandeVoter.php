@@ -56,6 +56,6 @@ class CommandeVoter extends Voter
     }
     private function canAjouter(User $user)
     {
-        return in_array('ROLE_CLIENT',$user->getRoles());
+        return in_array('ROLE_GESTIONNAIRE',$user->getRoles());
     }
 }
