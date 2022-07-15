@@ -24,7 +24,7 @@ final class Decoder implements DecoderInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        
+        // dd($request);
         if (!$request) {
             return null;
         } 

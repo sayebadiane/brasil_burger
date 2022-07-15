@@ -12,7 +12,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\File ;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
@@ -29,21 +30,21 @@ class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["burger:read:simple","menu-post", 'commande-post', 'commande-get'])]
+    #[Groups(["menu-post", 'menu-write', "burger:read:simple",'commande-post', 'commande-get'])]
     #[ORM\Column(type: 'integer')]
     protected $id;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le nom est Obligatoire")]
     protected $nom;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'boisson-get-simple'])]
-    #[ORM\Column(type: 'blob', length: 255)]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'boisson-get-simple'])]
+    #[ORM\Column(type: 'blob')]
     //#[Assert\NotBlank(message: "L'image est Obligatoire")]
     protected $image;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'get-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
     #[ORM\Column(type: 'float',nullable:true)]
     // #[Assert\NotBlank(message: "Le prix est Obligatoire")]
     protected $prix;
@@ -56,11 +57,15 @@ class Produit
     #[ORM\JoinColumn(nullable: true)]
     private $commandes;
 
-   #[Groups("burger-post",'boisson-post')]
   
-//    #[Assert\NotBlank(message: "L' image onnnnnnbb est Obligatoire")]
-    #[SerializedName("image")] 
-   protected File $imagefile;
+// #[Assert\NotBlank(message: "L' image onnnnnnbb est Obligatoire")]
+//    #[SerializedName("images")]
+
+    /**
+     * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
+     */
+   #[Groups("burger-post", "menu-post", 'boisson-post')]
+   private ?File $imagefile=null;
 
 
     public function __construct()
@@ -88,12 +93,17 @@ class Produit
     public function getImage(): ?string
     {
         if(is_resource($this->image)){
+    
             return base64_encode(stream_get_contents($this->image));
         }
-        return $this->image;
+        elseif($this->image){
+            return base64_encode($this->image);
+
+        }
+        return null;
     }
 
-    public function setImage(string $image): self
+    public function setImage($image): self
     {
         $this->image = $image;
 
@@ -159,7 +169,9 @@ class Produit
     public function setImagefile(File $imagefile): self
     {
         $this->imagefile = $imagefile;
+       
 
         return $this;
     }
+   
 }

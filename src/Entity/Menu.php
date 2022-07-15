@@ -16,30 +16,28 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 #[ApiResource(
-    collectionOperations:[
-        "get"=>[
+    collectionOperations: [
+        "get" => [
 
             'normalization_context' => ['groups' => 'get-write'],
-            'security'=>"is_granted('MENU_ALL',_api_resource_class)"
+            'security' => "is_granted('MENU_ALL',_api_resource_class)"
         ],
-        "post"=>[
+        "post" => [
             "security_post_denormalize" => "is_granted('AJOUTER_MENU', object)",
-            "security_post_denormalize_message"=> "vous n'avez pas le droit d' accées",
-                
-            "method"=>"post",
-            
+            "security_post_denormalize_message" => "vous n'avez pas le droit d' accées",
 
-            'denormalization_context' => ['groups' => 'menu-post' ],
-           
-
-            'normalization_context' => ['groups' => 'get-write'],
-           
+            "method" => "post",
+            'input_formats' => [
+                'multipart' => ['multipart/form-data'],
+            ],
+            'denormalization_context' => ['groups' => 'menu-post'],
+            'normalization_context' => ['groups' => 'menu-write'],
         ],
-       
-       
-        
+
+
+
     ],
-    itemOperations:[
+    itemOperations: [
         "put" => [
             'denormalization_context' => ['groups' => 'menu-post'],
             "access_control" => "is_granted('EDIT', previous_object)",
@@ -48,32 +46,32 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
             'method' => 'get',
             'status' => 200,
             'normalization_context' => ['groups' => 'menu:get:all'],
-            'security'=> "is_granted('AJOUTER_MENU', object)",
-            'security_message'=>" vous n' avez pas accées"
+            'security' => "is_granted('AJOUTER_MENU', object)",
+            'security_message' => " vous n' avez pas accées"
         ],
-         "delete"
+        "delete"
     ]
-    
+
 )]
 class Menu extends Produit
 {
 
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'menus')]
-    #[Groups(["menu-post", "menu:get:all"])]
+    #[Groups(["menu:get:all"])]
     private $gestionnaire;
 
-    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBurger::class,cascade:['persist'])]
-    #[Groups(["menu-post",'get-write'])]
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBurger::class, cascade:['persist'])]
+    #[Groups(["menu-post", 'menu-write'])]
     #[Assert\Valid]
     #[Assert\Count(["min" => 1, "minMessage" => "on ne peut pas enregistrer menu sans burger"])]
     private $menuBurgers;
 
-    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuTaille::class,cascade:['persist'])]
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuTaille::class, cascade: ['persist'])]
     #[Groups(["menu-post"])]
     #[Assert\Valid]
     private $menuTailles;
 
-    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuPortionFrite::class,cascade:['persist'])]
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuPortionFrite::class, cascade: ['persist'])]
     #[Groups(["menu-post"])]
     #[Assert\Valid]
     private $menuPortionFrites;
@@ -81,7 +79,7 @@ class Menu extends Produit
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuCommande::class)]
     private $menuCommandes;
 
-   
+
 
     public function __construct()
     {
@@ -93,7 +91,7 @@ class Menu extends Produit
         $this->menuCommandes = new ArrayCollection();
     }
 
-    
+
 
     public function getGestionnaire(): ?Gestionnaire
     {
@@ -120,9 +118,9 @@ class Menu extends Produit
             $this->menuBurgers[] = $menuBurger;
             $menuBurger->setMenu($this);
         }
-        
 
-        return $this; 
+
+        return $this;
     }
 
     public function removeMenuBurger(MenuBurger $menuBurger): self
@@ -193,7 +191,7 @@ class Menu extends Produit
                 $menuPortionFrite->setMenu(null);
             }
         }
-       
+
 
         return $this;
     }
@@ -202,20 +200,19 @@ class Menu extends Produit
     #[Assert\Callback]
     public function validate(ExecutionContextInterface $context, $payload)
     {
-        $portion=count($this->getMenuPortionFrites()) ;
-        $boison=count($this->getMenuTailles());
-        
-        if ($portion==0 && $boison==0) {
-            $context
-            ->buildViolation('on doit avoire obligatoirement une boisson ou une portion de frite dans un menu')
-            ->addViolation();
-        }
-          if( $this->doublon()!=true){
-            $context
-            ->buildViolation('vous ne pouvais pas choisir deux menu de meme id')
-            ->addViolation();
+        $portion = count($this->getMenuPortionFrites());
+        $boison = count($this->getMenuTailles());
 
-          }
+        if ($portion == 0 && $boison == 0) {
+            $context
+                ->buildViolation('on doit avoire obligatoirement une boisson ou une portion de frite dans un menu')
+                ->addViolation();
+        }
+        if ($this->doublon() != true) {
+            $context
+                ->buildViolation('vous ne pouvais pas choisir deux menu de meme id')
+                ->addViolation();
+        }
     }
     public  function doublon(): bool
     {
@@ -263,6 +260,5 @@ class Menu extends Produit
         }
 
         return $this;
-    }  
-   
+    }
 }

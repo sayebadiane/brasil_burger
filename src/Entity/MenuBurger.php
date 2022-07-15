@@ -11,10 +11,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MenuBurgerRepository::class)]
 #[ApiResource()]
+
 class MenuBurger
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups('menu-post','menu-write')]
     #[ORM\Column(type: 'integer')]
     private $id;
 
@@ -25,11 +27,11 @@ class MenuBurger
     #[ORM\ManyToOne(targetEntity: Burger::class, inversedBy: 'menuBurgers')]
     // #[Assert\Count(["min" =>1,"minMessage"=>"on ne peut pas enregistrer menu sans burger"])]
     #[Assert\NotBlank(message:"le burger est obligatoire")]
-    #[Groups('menu-post')]
+    #[Groups('menu-post','menu-write')]
     private $burger;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'menuBurgers')]
-    #[Assert\NotBlank(message:"un menu doit avoir obligatoirement un burger")]
+    // #[Assert\NotBlank(message:"un menu doit avoir obligatoirement un burger")]
     private $menu;
     public function getId(): ?int
     {

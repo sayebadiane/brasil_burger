@@ -43,7 +43,7 @@ class Taille
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups('menu:get:all',"taille:read:simple","menu-get",'get-write',"boisson-get",'boisson-get-simple')]
+    #[Groups("menu-post",'menu:get:all',"taille:read:simple","menu-get",'get-write',"boisson-get",'boisson-get-simple')]
     private $libelle;
 
     #[ORM\Column(type: 'float')]

@@ -15,6 +15,8 @@ class MenuTaille
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["menu-post"])]
+
     private $id;
 
     #[ORM\Column(type: 'integer')]

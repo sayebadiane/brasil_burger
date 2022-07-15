@@ -15,6 +15,7 @@ class MenuPortionFrite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
+    #[Groups(["menu-post"])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
