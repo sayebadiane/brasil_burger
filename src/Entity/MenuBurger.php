@@ -70,7 +70,9 @@ class MenuBurger
     public function setMenu(?Menu $menu): self
     {
         $this->menu = $menu;
+       
 
         return $this;
+        
     }
 }

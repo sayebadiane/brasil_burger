@@ -39,7 +39,7 @@ class MenuDataPersister implements DataPersisterInterface
     public function persist($data)
     {
         $data->setImagefile($this->reqStack->getCurrentRequest()->files->all()["imagefile"]);
-      //dd($this->reqStack->getCurrentRequest()->files->all());
+    //    dd($this->reqStack->getCurrentRequest()->files->all());
         $realPath = $data->getImagefile()->getRealPath();
         $image = stream_get_contents(fopen($realPath,'rb'));
 

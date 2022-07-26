@@ -8,6 +8,8 @@ use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+
 
 class BurgerDataPersister implements DataPersisterInterface
 {
@@ -15,10 +17,13 @@ class BurgerDataPersister implements DataPersisterInterface
     private EntityManagerInterface $entityManager;
     public function __construct(
         EntityManagerInterface $entityManager,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
+        RequestStack $reqStack,
     ) {
+
         $this->entityManager = $entityManager;
-        $this->fileUploader= $fileUploader;
+        $this->fileUploader = $fileUploader;
+        $this->reqStack = $reqStack;
     }
     public function supports($data): bool
     {
@@ -31,8 +36,12 @@ class BurgerDataPersister implements DataPersisterInterface
     {
         // dd($data);
 
-       $data->setImage($this->fileUploader->upload($data->getImagefile()));
-        $this->entityManager->persist($data);
+        $data->setImagefile($this->reqStack->getCurrentRequest()->files->all()["imagefile"]);
+        //    dd($this->reqStack->getCurrentRequest()->files->all());
+        $realPath = $data->getImagefile()->getRealPath();
+        $image = stream_get_contents(fopen($realPath, 'rb'));
+
+        $data->setImage($image);        $this->entityManager->persist($data);
         $this->entityManager->flush();
     }
     public function remove($data)

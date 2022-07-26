@@ -34,22 +34,22 @@ class Produit
     #[ORM\Column(type: 'integer')]
     protected $id;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get", 'boisson-get-simple'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get",'boisson-get-simple', 'commande-get'])]
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le nom est Obligatoire")]
     protected $nom;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'boisson-get-simple'])]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'commande-get'])]
     #[ORM\Column(type: 'blob')]
     //#[Assert\NotBlank(message: "L'image est Obligatoire")]
     protected $image;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all",'menu:read:simple', 'commande-get'])]
     #[ORM\Column(type: 'float',nullable:true)]
     // #[Assert\NotBlank(message: "Le prix est Obligatoire")]
     protected $prix;
 
-    #[Groups(['burger-post',"burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get"])]
+    #[Groups(['burger-post',"burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get", 'commande-get'])]
     #[ORM\Column(type: 'string', length: 255)]
     protected $etat;
 

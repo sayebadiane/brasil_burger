@@ -24,6 +24,8 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
         ],
         "get"=>[
+            'normalization_context' => ['groups' => 'commande-get']  
+
 
            
 
@@ -78,6 +80,14 @@ class Commande
     #[Assert\Valid]
     private $menuCommandes;
 
+    #[ORM\OneToMany(mappedBy: 'commande', targetEntity: BoissonTailleCommande::class,cascade:['persist'])]
+    #[Groups(['commande-post', 'commande-get'])]
+    private $boissonTailleCommandes;
+
+    #[ORM\OneToMany(mappedBy: 'commande', targetEntity: MenuBoissonTailleCommande::class)]
+    private $menuBoissonTailleCommandes;
+
+   
     // #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'commandes')]
     // private $produits;
 
@@ -86,6 +96,9 @@ class Commande
         $this->produits = new ArrayCollection();
         $this->burgerCommandes = new ArrayCollection();
         $this->menuCommandes = new ArrayCollection();
+        $this->commandeMenus = new ArrayCollection();
+        $this->boissonTailleCommandes = new ArrayCollection();
+        $this->menuBoissonTailleCommandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -285,4 +298,70 @@ class Commande
         }
        
     }
+
+    /**
+     * @return Collection<int, BoissonTailleCommande>
+     */
+    public function getBoissonTailleCommandes(): Collection
+    {
+        return $this->boissonTailleCommandes;
+    }
+
+    public function addBoissonTailleCommande(BoissonTailleCommande $boissonTailleCommande): self
+    {
+        if (!$this->boissonTailleCommandes->contains($boissonTailleCommande)) {
+            $this->boissonTailleCommandes[] = $boissonTailleCommande;
+            $boissonTailleCommande->setCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoissonTailleCommande(BoissonTailleCommande $boissonTailleCommande): self
+    {
+        if ($this->boissonTailleCommandes->removeElement($boissonTailleCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($boissonTailleCommande->getCommande() === $this) {
+                $boissonTailleCommande->setCommande(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MenuBoissonTailleCommande>
+     */
+    public function getMenuBoissonTailleCommandes(): Collection
+    {
+        return $this->menuBoissonTailleCommandes;
+    }
+
+    public function addMenuBoissonTailleCommande(MenuBoissonTailleCommande $menuBoissonTailleCommande): self
+    {
+        if (!$this->menuBoissonTailleCommandes->contains($menuBoissonTailleCommande)) {
+            $this->menuBoissonTailleCommandes[] = $menuBoissonTailleCommande;
+            $menuBoissonTailleCommande->setCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenuBoissonTailleCommande(MenuBoissonTailleCommande $menuBoissonTailleCommande): self
+    {
+        if ($this->menuBoissonTailleCommandes->removeElement($menuBoissonTailleCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($menuBoissonTailleCommande->getCommande() === $this) {
+                $menuBoissonTailleCommande->setCommande(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
+
+   
+
+   
 }

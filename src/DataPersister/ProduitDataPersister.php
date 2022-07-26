@@ -7,17 +7,21 @@ use App\Entity\Produit;
 use App\Service\FileUploader;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 
 class ProduitDataPersister implements DataPersisterInterface
 {
     private EntityManagerInterface $entityManager;
+    private RequestStack $requeststack;
     public function __construct(
         EntityManagerInterface $entityManager,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
+        RequestStack $requeststack
     ) {
         $this->entityManager = $entityManager;
         $this->fileUploader = $fileUploader;
+        $this->requeststack = $requeststack;
     }
     public function supports($data): bool
     {
@@ -28,8 +32,12 @@ class ProduitDataPersister implements DataPersisterInterface
      */
     public function persist($data)
     {
-        // $data->setImage($this->fileUploader->upload($data->getImagefile()));
-       
+        dd("ok");
+        $data->setImagefile($this->requeststack->getCurrentRequest()->files->all()["imagefile"]);
+        $realPath = $data->getImagefile()->getRealPath();
+        $image = stream_get_contents(fopen($realPath, 'rb'));
+        $data->setImage($image);
+        //dd($data);
         $this->entityManager->persist($data);
         $this->entityManager->flush();
     }

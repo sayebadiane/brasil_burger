@@ -67,7 +67,7 @@ class Menu extends Produit
     private $menuBurgers;
 
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuTaille::class, cascade: ['persist'])]
-    #[Groups(["menu-post"])]
+    #[Groups(["menu-post",'menu-write'])]
     #[Assert\Valid]
     private $menuTailles;
 
@@ -79,7 +79,11 @@ class Menu extends Produit
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuCommande::class)]
     private $menuCommandes;
 
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBoissonTailleCommande::class,cascade:['persist'])]
+    #[Groups(["menu-post"])]
+    private $menuBoissonTailleCommandes;
 
+  
 
     public function __construct()
     {
@@ -89,6 +93,8 @@ class Menu extends Produit
         $this->menuTailles = new ArrayCollection();
         $this->menuPortionFrites = new ArrayCollection();
         $this->menuCommandes = new ArrayCollection();
+        $this->commandeMenus = new ArrayCollection();
+        $this->menuBoissonTailleCommandes = new ArrayCollection();
     }
 
 
@@ -261,4 +267,39 @@ class Menu extends Produit
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, MenuBoissonTailleCommande>
+     */
+    public function getMenuBoissonTailleCommandes(): Collection
+    {
+        return $this->menuBoissonTailleCommandes;
+    }
+
+    public function addMenuBoissonTailleCommande(MenuBoissonTailleCommande $menuBoissonTailleCommande): self
+    {
+        if (!$this->menuBoissonTailleCommandes->contains($menuBoissonTailleCommande)) {
+            $this->menuBoissonTailleCommandes[] = $menuBoissonTailleCommande;
+            $menuBoissonTailleCommande->setMenu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenuBoissonTailleCommande(MenuBoissonTailleCommande $menuBoissonTailleCommande): self
+    {
+        if ($this->menuBoissonTailleCommandes->removeElement($menuBoissonTailleCommande)) {
+            // set the owning side to null (unless already changed)
+            if ($menuBoissonTailleCommande->getMenu() === $this) {
+                $menuBoissonTailleCommande->setMenu(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
+    
+
+    
 }

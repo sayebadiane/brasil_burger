@@ -20,7 +20,7 @@ class MenuTaille
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["menu-post"])]
+    #[Groups(["menu-post",'menu-write'])]
     #[Assert\Positive()]
     
     private $quantity=1;
@@ -29,7 +29,7 @@ class MenuTaille
     private $menu;
 
     #[ORM\ManyToOne(targetEntity: Taille::class, inversedBy: 'menuTailles')]
-    #[Groups(["menu-post"])]
+    #[Groups(["menu-post",'menu-write'])]
     private $taille;
 
     public function getId(): ?int
