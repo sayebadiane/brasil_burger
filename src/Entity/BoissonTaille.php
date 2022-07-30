@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Complement1;
+
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,15 +19,17 @@ class BoissonTaille
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['commande-post', 'commande-get'])]
+
+    #[Groups(['commande-post', 'commande-get','complement1-get'])]
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["boisson-post"])]
+    #[Groups(["boisson-post",'complement1-get'])]
     #[Assert\Positive()]
     private $stoke=1;
 
     #[ORM\ManyToOne(targetEntity: Boisson::class, inversedBy: 'boissonTailles')]
+    #[Groups( 'complement1-get',"taille:read:simple",'complement-get')]
     private $boisson;
 
     #[ORM\ManyToOne(targetEntity: Taille::class, inversedBy: 'boissonTailles')]
@@ -37,10 +42,14 @@ class BoissonTaille
     #[ORM\OneToMany(mappedBy: 'tailleboisson', targetEntity: MenuBoissonTailleCommande::class)]
     private $menuBoissonTailleCommandes;
 
+    // #[ORM\OneToMany(mappedBy: 'boissonTailles', targetEntity: Complement1::class)]
+    private $complement1s;
+
     public function __construct()
     {
         $this->boissonTailleCommandes = new ArrayCollection();
         $this->menuBoissonTailleCommandes = new ArrayCollection();
+        $this->complement1s = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,4 +152,15 @@ class BoissonTaille
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Complement1>
+     */
+    public function getComplement1s(): Collection
+    {
+        return $this->complement1s;
+    }
+
+
+    
 }

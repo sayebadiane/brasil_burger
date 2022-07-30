@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Dto\Catalogues;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\ComplementDetail;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Catalogues>
+ * @extends ServiceEntityRepository<ComplementDetail>
  *
- * @method Catalogues|null find($id, $lockMode = null, $lockVersion = null)
- * @method Catalogues|null findOneBy(array $criteria, array $orderBy = null)
- * @method Catalogues[]    findAll()
- * @method Catalogues[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ComplementDetail|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ComplementDetail|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ComplementDetail[]    findAll()
+ * @method ComplementDetail[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CataloguesRepository extends ServiceEntityRepository
+class ComplementDetailRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Catalogues::class);
+        parent::__construct($registry, ComplementDetail::class);
     }
 
-    public function add(Catalogues $entity, bool $flush = false): void
+    public function add(ComplementDetail $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class CataloguesRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Catalogues $entity, bool $flush = false): void
+    public function remove(ComplementDetail $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class CataloguesRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Catalogues[] Returns an array of Catalogues objects
+//     * @return ComplementDetail[] Returns an array of ComplementDetail objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class CataloguesRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Catalogues
+//    public function findOneBySomeField($value): ?ComplementDetail
 //    {
 //        return $this->createQueryBuilder('c')
 //            ->andWhere('c.exampleField = :val')

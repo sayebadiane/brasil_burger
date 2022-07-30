@@ -83,6 +83,9 @@ class Menu extends Produit
     #[Groups(["menu-post"])]
     private $menuBoissonTailleCommandes;
 
+    // #[ORM\OneToMany(mappedBy: 'menus', targetEntity: ComplementDetail::class)]
+    private $complementDetails;
+
   
 
     public function __construct()
@@ -95,6 +98,7 @@ class Menu extends Produit
         $this->menuCommandes = new ArrayCollection();
         $this->commandeMenus = new ArrayCollection();
         $this->menuBoissonTailleCommandes = new ArrayCollection();
+        $this->complementDetails = new ArrayCollection();
     }
 
 
@@ -297,6 +301,36 @@ class Menu extends Produit
 
         return $this;
     }
+
+    // /**
+    //  * @return Collection<int, ComplementDetail>
+    //  */
+    // public function getComplementDetails(): Collection
+    // {
+    //     return $this->complementDetails;
+    // }
+
+    // public function addComplementDetail(ComplementDetail $complementDetail): self
+    // {
+    //     if (!$this->complementDetails->contains($complementDetail)) {
+    //         $this->complementDetails[] = $complementDetail;
+    //         $complementDetail->setMenus($this);
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function removeComplementDetail(ComplementDetail $complementDetail): self
+    // {
+    //     if ($this->complementDetails->removeElement($complementDetail)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($complementDetail->getMenus() === $this) {
+    //             $complementDetail->setMenus(null);
+    //         }
+    //     }
+
+    //     return $this;
+    // }
 
     
     

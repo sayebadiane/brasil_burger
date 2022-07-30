@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 use App\Entity\Produit;
+use App\Entity\Complement1;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -41,7 +43,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class PortionFrite extends Produit
 {
-    #[ORM\ManyToOne(targetEntity: Complements::class, inversedBy: 'portionFrites')]
     private $complement;
 
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'portionFrites')]
@@ -50,6 +51,9 @@ class PortionFrite extends Produit
 
     #[ORM\OneToMany(mappedBy: 'portionfrite', targetEntity: MenuPortionFrite::class)]
     private $menuPortionFrites;
+
+    // #[ORM\OneToMany(mappedBy: 'prrtionfrites', targetEntity: Complement1::class)]
+    private $complement1s;
 
 
 
@@ -60,6 +64,7 @@ class PortionFrite extends Produit
         parent::__construct();
         // $this->menus = new ArrayCollection();
         $this->menuPortionFrites = new ArrayCollection();
+        $this->complement1s = new ArrayCollection();
     }
 
     // #[ORM\Id]
@@ -72,17 +77,17 @@ class PortionFrite extends Produit
     //     return $this->id;
     // }
 
-    public function getComplement(): ?Complements
-    {
-        return $this->complement;
-    }
+    // public function getComplement(): ?Complements
+    // {
+    //     return $this->complement;
+    // }
 
-    public function setComplement(?Complements $complement): self
-    {
-        $this->complement = $complement;
+    // public function setComplement(?Complements $complement): self
+    // {
+    //     $this->complement = $complement;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getGestionnaire(): ?Gestionnaire
     {
@@ -126,11 +131,12 @@ class PortionFrite extends Produit
         return $this;
     }
 
-   
-
-  
-
-    
-
+    /**
+     * @return Collection<int, Complement1>
+     */
+    public function getComplement1s(): Collection
+    {
+        return $this->complement1s;
+    }
    
 }

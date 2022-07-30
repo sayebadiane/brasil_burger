@@ -62,6 +62,9 @@ class Burger extends Produit
     #[ORM\OneToMany(mappedBy: 'burger', targetEntity: BurgerCommande::class)]
     private $burgerCommandes;
 
+    #[ORM\OneToMany(mappedBy: 'burgers', targetEntity: ComplementDetail::class)]
+    private $complementDetails;
+
     // #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'burgers')]
     // private $menus;
 
@@ -71,6 +74,7 @@ class Burger extends Produit
         $this->menus = new ArrayCollection();
         $this->menuBurgers = new ArrayCollection();
         $this->burgerCommandes = new ArrayCollection();
+        $this->complementDetails = new ArrayCollection();
     }
 
     // public function getCatalogues(): ?Catalogues
@@ -154,6 +158,36 @@ class Burger extends Produit
             // set the owning side to null (unless already changed)
             if ($burgerCommande->getBurger() === $this) {
                 $burgerCommande->setBurger(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ComplementDetail>
+     */
+    public function getComplementDetails(): Collection
+    {
+        return $this->complementDetails;
+    }
+
+    public function addComplementDetail(ComplementDetail $complementDetail): self
+    {
+        if (!$this->complementDetails->contains($complementDetail)) {
+            $this->complementDetails[] = $complementDetail;
+            $complementDetail->setBurgers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComplementDetail(ComplementDetail $complementDetail): self
+    {
+        if ($this->complementDetails->removeElement($complementDetail)) {
+            // set the owning side to null (unless already changed)
+            if ($complementDetail->getBurgers() === $this) {
+                $complementDetail->setBurgers(null);
             }
         }
 

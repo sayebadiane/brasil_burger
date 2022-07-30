@@ -7,7 +7,7 @@ namespace App\DataProvider;
 
 
 use App\Entity\Menu;
-use App\Entity\Catalogues;
+use App\Entity\Dto\Catalogues;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use App\Entity\Burger;
@@ -28,12 +28,12 @@ class CatalogueDataprovider implements ContextAwareCollectionDataProviderInterfa
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
+        // dd($this->catalogues);
 
-     return [
-      $this->catalogues->getBurgers(),
-      $this->catalogues->getMenus()
-     ];
-        
+        return [
+            $this->catalogues->getBurgers(),
+            $this->catalogues->getMenus()
+        ];
     }
 
 }

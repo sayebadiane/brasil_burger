@@ -39,7 +39,7 @@ class Taille
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["menu-post", 'menu-write','get-write',"boisson-post","boisson-get", 'boisson-get-simple', 'menu:get:all'])]
+    #[Groups(["menu-post", 'menu-write','get-write',"boisson-post","boisson-get", 'boisson-get-simple', 'menu:get:all',"taille:read:simple"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -50,13 +50,15 @@ class Taille
     #[Groups('menu:get:all',"taille:read:simple",'get-write',"boisson-get",'boisson-get-simple')]
     private $prix;
 
-    #[ORM\ManyToOne(targetEntity: Complements::class, inversedBy: 'tailles')]
+    // #[ORM\ManyToOne(targetEntity: Complements::class, inversedBy: 'tailles')]
     private $complement;
 
     #[ORM\OneToMany(mappedBy: 'taille', targetEntity: MenuTaille::class)]
     private $menuTailles;
 
     #[ORM\OneToMany(mappedBy: 'taille', targetEntity: BoissonTaille::class)]
+    #[Groups("taille:read:simple",'complement-get')]    
+
     private $boissonTailles;
 
     // #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'tailles')]
@@ -97,17 +99,17 @@ class Taille
 
         return $this;
     }
-    public function getComplement(): ?Complements
-    {
-        return $this->complement;
-    }
+    // public function getComplement(): ?Complements
+    // {
+    //     return $this->complement;
+    // }
 
-    public function setComplement(?Complements $complement): self
-    {
-        $this->complement = $complement;
+    // public function setComplement(?Complements $complement): self
+    // {
+    //     $this->complement = $complement;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
 
     /**

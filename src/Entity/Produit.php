@@ -30,26 +30,26 @@ class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["menu-post", 'menu-write', "burger:read:simple",'commande-post', 'commande-get'])]
+    #[Groups(["menu-post", 'menu-write', "burger:read:simple",'commande-post', 'commande-get', "catalogue-get","taille:read:simple","taille:read:simple",'complement-get', 'complement1-get'])]
     #[ORM\Column(type: 'integer')]
     protected $id;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get",'boisson-get-simple', 'commande-get'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get",'boisson-get-simple', 'commande-get', "catalogue-get", "taille:read:simple", 'complement-get', 'complement1-get'])]
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le nom est Obligatoire")]
     protected $nom;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'commande-get'])]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'commande-get', "catalogue-get", 'complement-get', 'complement1-get'])]
     #[ORM\Column(type: 'blob')]
     //#[Assert\NotBlank(message: "L'image est Obligatoire")]
     protected $image;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all",'menu:read:simple', 'commande-get'])]
+    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all",'menu:read:simple', 'commande-get', "catalogue-get", 'complement-get', 'complement1-get'])]
     #[ORM\Column(type: 'float',nullable:true)]
     // #[Assert\NotBlank(message: "Le prix est Obligatoire")]
     protected $prix;
 
-    #[Groups(['burger-post',"burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get", 'commande-get'])]
+    #[Groups(['burger-post',"burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get", 'commande-get',])]
     #[ORM\Column(type: 'string', length: 255)]
     protected $etat;
 
@@ -66,6 +66,9 @@ class Produit
      */
    #[Groups("burger-post", "menu-post", 'boisson-post')]
    private ?File $imagefile=null;
+  #[Groups("catalogue-get")]
+   #[ORM\Column(type: 'string', length: 255, nullable: true)]
+   private $type;
 
 
     public function __construct()
@@ -170,6 +173,18 @@ class Produit
     {
         $this->imagefile = $imagefile;
        
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(?string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

@@ -41,8 +41,6 @@ class Gestionnaire extends User
     }
 
     
-
-    
     
 
     // public function getPassword(): ?string
