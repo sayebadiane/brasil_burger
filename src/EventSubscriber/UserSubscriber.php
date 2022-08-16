@@ -2,14 +2,16 @@
 
 namespace App\EventSubscriber;
 
-use App\Entity\Boisson;
 use App\Entity\Menu;
 use App\Entity\Burger;
-use App\Entity\PortionFrite;
 use App\Entity\Taille;
+use App\Entity\Boisson;
+use App\Entity\Commande;
 use Doctrine\ORM\Events;
+use App\Entity\PortionFrite;
 use PhpParser\Node\Expr\AssignOp\Mod;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -53,10 +55,20 @@ class UserSubscriber implements EventSubscriberInterface
         else if ($args->getObject() instanceof Boisson) {
             $args->getObject()->setGestionnaire($this->getUser());
         } 
-    
+        else if($args->getObject() instanceof Commande){
+           
+          $args->getObject()->setClient($this->getUser()) ;
+        }
     }
- 
- #servic
+
+    public function succesConnexion(AuthenticationSuccessEvent $event){
+        $data=$event->getData();
+        
+        $user=$event->getUser();
+        $data['user']=$user->getId();
+        $event->setData($data);
+
+    }
     
 
    

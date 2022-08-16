@@ -15,20 +15,20 @@ class MenuPortionFrite
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["menu-post"])]
+    #[Groups(["details", "menu-post"])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["menu-post"])]
+    #[Groups(["details", "menu-post"])]
     #[Assert\Positive()]
-    private $quantity=1;
+    private $quantity = 1;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'menuPortionFrites')]
     private $menu;
 
     #[ORM\ManyToOne(targetEntity: PortionFrite::class, inversedBy: 'menuPortionFrites')]
-    #[Groups(["menu-post"])]
+    #[Groups(["details", "menu-post"])]
 
     private $portionfrite;
 

@@ -23,6 +23,7 @@ services:
     App\EventSubscriber\UserSubscriber:
         tags:
         - { name: doctrine.event_listener, event: prePersist}
+        - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: succesConnexion}
 
     App\DataProvider\CatalogueDataprovider:
         tags: [ { name: 'api_platform.collection_data_provider', priority: 2 } ]

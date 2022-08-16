@@ -34,16 +34,18 @@ class Zone
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups("quartier-post", "quartier-get")]
+    // #[Groups(['commande-post', 'commande-get'])]
+
+    #[Groups(['commande-get','commande-itemget',"quartier-post", "quartier-get",'commande-post', 'commande-get'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups("quartier-get")]
+    #[Groups(['commande-get','commande-itemget',"quartier-get", 'commande-get'])]
     #[Assert\NotBlank(message: "Le nom est obligatoire")]
     private $nom;
 
     #[ORM\Column(type: 'float')]
-    #[Groups("quartier-get")]
+    #[Groups(['commande-get','commande-itemget',"quartier-get",'commande-get'])]
     #[Assert\NotBlank(message: "Le prix est obligatoire")]
 
     private $prix;

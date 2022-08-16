@@ -16,15 +16,17 @@ class BurgerCommande
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['commande-post', 'commande-get','commande-itemget'])]
+
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups(['commande-post', 'commande-get','commande-itemget'])]
     #[Assert\Positive(message:"quantite doit etre possitif")]
     private $quantite=1;
 
     #[ORM\ManyToOne(targetEntity: Burger::class, inversedBy: 'burgerCommandes')]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups(['commande-post', 'commande-get','commande-itemget'])]
     private $burger;
 
     #[ORM\ManyToOne(targetEntity: Commande::class, inversedBy: 'burgerCommandes')]

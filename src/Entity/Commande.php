@@ -33,7 +33,13 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
     ],
     itemOperations:[
         "put",
-        "get"
+        "get" => [
+            'normalization_context' => ['groups' => 'commande-itemget']
+
+
+
+
+        ]
     ]
 )]
 class Commande
@@ -41,37 +47,37 @@ class Commande
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups('commande-get')]
+    #[Groups(['commande-get', 'commande-itemget'])]
     private $id;
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['commande-get'])]
+    #[Groups(['commande-get', 'commande-itemget'])]
     private $numeroCommande;
     #[ORM\Column(type: 'datetime')]
-    #[Groups(['commande-get'])]
+    #[Groups(['commande-get', 'commande-itemget'])]
     private $date;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups(['commande-post', 'commande-get','commande-itemget'])]
     private $etat;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups(['commande-post', 'commande-get','commande-itemget'])]
     private $montant;
 
     #[ORM\ManyToOne(targetEntity: Livraison::class, inversedBy: 'commandes')]
     private $livraison;
 
     #[ORM\ManyToOne(targetEntity: Zone::class, inversedBy: 'commandes')]
+    #[Groups(['commande-post', 'commande-get', 'commande-itemget'])]
     private $zone;
 
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'commandes')]
     private $gestionnaire;
 
-    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'commandes')]
-    private $client;
+    
 
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: BurgerCommande::class,cascade:['persist'])]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups(['commande-post', 'commande-get','commande-itemget'])]
     #[Assert\Valid]
     private $burgerCommandes;
 
@@ -86,6 +92,11 @@ class Commande
 
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: MenuBoissonTailleCommande::class)]
     private $menuBoissonTailleCommandes;
+
+    #[ORM\ManyToOne(targetEntity: Client::class, inversedBy: 'commandes')]
+    #[Groups(['commande-post', 'commande-get'])]
+
+    private $client;
 
    
     // #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'commandes')]
@@ -190,17 +201,7 @@ class Commande
         return $this;
     }
 
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
-
-        return $this;
-    }
+   
 
     // /**
     //  * @return Collection<int, Produit>
@@ -355,6 +356,18 @@ class Commande
                 $menuBoissonTailleCommande->setCommande(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }

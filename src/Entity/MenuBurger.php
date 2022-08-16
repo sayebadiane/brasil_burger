@@ -16,18 +16,18 @@ class MenuBurger
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups('menu-post','menu-write')]
+    #[Groups(['details','complementdetail-get','menu-post','menu-write'])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups('menu-post','get-write')]
+    #[Groups(['details','complementdetail-get','menu-post','get-write'])]
     #[Assert\Positive()]
     private $quantite=1;
     #[ORM\ManyToOne(targetEntity: Burger::class, inversedBy: 'menuBurgers')]
     // #[Assert\Count(["min" =>1,"minMessage"=>"on ne peut pas enregistrer menu sans burger"])]
     #[Assert\NotBlank(message:"le burger est obligatoire")]
-    #[Groups('menu-post','menu-write')]
+    #[Groups(['details','complementdetail-get','menu-post','menu-write'])]
     private $burger;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'menuBurgers')]

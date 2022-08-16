@@ -11,22 +11,22 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TailleRepository::class)]
 #[ApiResource(
-    collectionOperations:[
-        "post"=>[
+    collectionOperations: [
+        "post" => [
             "security" => "is_granted('ROLE_GESTIONNAIRE')",
             "security_message" => "vous n'avvez pas assez a cette ressouce"
-        
+
 
         ],
-        "get"=>[
+        "get" => [
             'normalization_context' => ['groups' => 'taille:read:simple']
 
 
         ]
     ],
-    itemOperations:[
+    itemOperations: [
         "put",
-        "get"=>[
+        "get" => [
 
             'normalization_context' => ['groups' => 'menu:get:all']
 
@@ -39,15 +39,15 @@ class Taille
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["menu-post", 'menu-write','get-write',"boisson-post","boisson-get", 'boisson-get-simple', 'menu:get:all',"taille:read:simple"])]
+    #[Groups(['menu:get:all', 'details', 'get-write', "menu-post", 'menu-write', 'get-write', "boisson-post", "boisson-get", 'boisson-get-simple', 'menu:get:all', "taille:read:simple"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups("menu-post", 'menu-write','menu:get:all',"taille:read:simple","menu-get",'get-write',"boisson-get",'boisson-get-simple')]
+    #[Groups('details','menu:get:all', 'get-write', "menu-post", 'menu-write', 'menu:get:all', "taille:read:simple", "menu-get", 'get-write', "boisson-get", 'boisson-get-simple')]
     private $libelle;
 
     #[ORM\Column(type: 'float')]
-    #[Groups('menu:get:all',"taille:read:simple",'get-write',"boisson-get",'boisson-get-simple')]
+    #[Groups('details','menu:get:all', 'get-write', 'menu:get:all', "taille:read:simple", 'get-write', "boisson-get", 'boisson-get-simple')]
     private $prix;
 
     // #[ORM\ManyToOne(targetEntity: Complements::class, inversedBy: 'tailles')]
@@ -57,8 +57,7 @@ class Taille
     private $menuTailles;
 
     #[ORM\OneToMany(mappedBy: 'taille', targetEntity: BoissonTaille::class)]
-    #[Groups("taille:read:simple",'complement-get')]    
-
+    #[Groups('details','menu:get:all', 'get-write', "taille:read:simple", 'complement-get')]
     private $boissonTailles;
 
     // #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'tailles')]

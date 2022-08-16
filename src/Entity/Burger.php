@@ -56,14 +56,22 @@ class Burger extends Produit
     #[Groups(["burger:read:all", "write"])]
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'burgers')]
     private $gestionnaire;
+    
+
     #[ORM\OneToMany(mappedBy: 'burger', targetEntity: MenuBurger::class)]
+  
     private $menuBurgers;
 
     #[ORM\OneToMany(mappedBy: 'burger', targetEntity: BurgerCommande::class)]
     private $burgerCommandes;
 
-    #[ORM\OneToMany(mappedBy: 'burgers', targetEntity: ComplementDetail::class)]
-    private $complementDetails;
+    // #[ORM\OneToMany(mappedBy: 'burgers', targetEntity: ComplementDetail::class)]
+    
+
+    private $complementdetails;
+
+    // #[ORM\OneToMany(mappedBy: 'burgers', targetEntity: ComplementDeatil::class)]
+    private $complementDeatils;
 
     // #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'burgers')]
     // private $menus;
@@ -74,7 +82,6 @@ class Burger extends Produit
         $this->menus = new ArrayCollection();
         $this->menuBurgers = new ArrayCollection();
         $this->burgerCommandes = new ArrayCollection();
-        $this->complementDetails = new ArrayCollection();
     }
 
     // public function getCatalogues(): ?Catalogues
@@ -164,33 +171,19 @@ class Burger extends Produit
         return $this;
     }
 
-    /**
-     * @return Collection<int, ComplementDetail>
-     */
-    public function getComplementDetails(): Collection
-    {
-        return $this->complementDetails;
-    }
+    // /**
+    //  * @return Collection<int, ComplementDeatil>
+    //  */
+    // public function getComplementDeatils(): Collection
+    // {
+    //     return $this->complementDeatils;
+    // }
 
-    public function addComplementDetail(ComplementDetail $complementDetail): self
-    {
-        if (!$this->complementDetails->contains($complementDetail)) {
-            $this->complementDetails[] = $complementDetail;
-            $complementDetail->setBurgers($this);
-        }
+    
 
-        return $this;
-    }
+   
+   
+   
 
-    public function removeComplementDetail(ComplementDetail $complementDetail): self
-    {
-        if ($this->complementDetails->removeElement($complementDetail)) {
-            // set the owning side to null (unless already changed)
-            if ($complementDetail->getBurgers() === $this) {
-                $complementDetail->setBurgers(null);
-            }
-        }
-
-        return $this;
-    }
+   
 }

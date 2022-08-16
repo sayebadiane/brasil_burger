@@ -31,7 +31,9 @@ class CommandeDataPersister implements DataPersisterInterface
     {
         $data->setNumeroCommande($this->numerocommande->uniqidReal());
         $data->setDate(new DateTime());
+        $data->setEtat("en cour");
         $this->entityManager->persist($data);
+       // dd($data);
         $this->entityManager->flush();
     }
     public function remove($data)

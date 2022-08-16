@@ -60,33 +60,32 @@ class Menu extends Produit
     #[Groups(["menu:get:all"])]
     private $gestionnaire;
 
-    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBurger::class, cascade:['persist'])]
-    #[Groups(["menu-post", 'menu-write'])]
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBurger::class, cascade: ['persist'])]
     #[Assert\Valid]
     #[Assert\Count(["min" => 1, "minMessage" => "on ne peut pas enregistrer menu sans burger"])]
+    #[Groups(['menu-post', 'details', 'menu-write'])]
     private $menuBurgers;
 
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuTaille::class, cascade: ['persist'])]
-    #[Groups(["menu-post",'menu-write'])]
+    #[Groups(['details', 'menu:get:all', 'get-write', "menu-post", 'menu-write'])]
     #[Assert\Valid]
     private $menuTailles;
 
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuPortionFrite::class, cascade: ['persist'])]
-    #[Groups(["menu-post"])]
+    #[Groups(["menu-post", "details"])]
     #[Assert\Valid]
     private $menuPortionFrites;
 
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuCommande::class)]
     private $menuCommandes;
 
-    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBoissonTailleCommande::class,cascade:['persist'])]
+    #[ORM\OneToMany(mappedBy: 'menu', targetEntity: MenuBoissonTailleCommande::class, cascade: ['persist'])]
     #[Groups(["menu-post"])]
     private $menuBoissonTailleCommandes;
 
-    // #[ORM\OneToMany(mappedBy: 'menus', targetEntity: ComplementDetail::class)]
-    private $complementDetails;
 
-  
+
+
 
     public function __construct()
     {
@@ -98,7 +97,6 @@ class Menu extends Produit
         $this->menuCommandes = new ArrayCollection();
         $this->commandeMenus = new ArrayCollection();
         $this->menuBoissonTailleCommandes = new ArrayCollection();
-        $this->complementDetails = new ArrayCollection();
     }
 
 
@@ -301,39 +299,4 @@ class Menu extends Produit
 
         return $this;
     }
-
-    // /**
-    //  * @return Collection<int, ComplementDetail>
-    //  */
-    // public function getComplementDetails(): Collection
-    // {
-    //     return $this->complementDetails;
-    // }
-
-    // public function addComplementDetail(ComplementDetail $complementDetail): self
-    // {
-    //     if (!$this->complementDetails->contains($complementDetail)) {
-    //         $this->complementDetails[] = $complementDetail;
-    //         $complementDetail->setMenus($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeComplementDetail(ComplementDetail $complementDetail): self
-    // {
-    //     if ($this->complementDetails->removeElement($complementDetail)) {
-    //         // set the owning side to null (unless already changed)
-    //         if ($complementDetail->getMenus() === $this) {
-    //             $complementDetail->setMenus(null);
-    //         }
-    //     }
-
-    //     return $this;
-    // }
-
-    
-    
-
-    
 }

@@ -43,7 +43,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 )]
 class PortionFrite extends Produit
 {
-    private $complement;
 
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'portionFrites')]
     #[Groups(["frite:read:all"])]
@@ -52,8 +51,14 @@ class PortionFrite extends Produit
     #[ORM\OneToMany(mappedBy: 'portionfrite', targetEntity: MenuPortionFrite::class)]
     private $menuPortionFrites;
 
+    // #[ORM\OneToMany(mappedBy: 'portionfrites', targetEntity: Complement::class)]
+    private $complements;
+
+    // #[ORM\OneToMany(mappedBy: 'portionfrites', targetEntity: ComplementDeatil::class)]
+    private $complementDeatils;
+
     // #[ORM\OneToMany(mappedBy: 'prrtionfrites', targetEntity: Complement1::class)]
-    private $complement1s;
+    
 
 
 
@@ -64,7 +69,8 @@ class PortionFrite extends Produit
         parent::__construct();
         // $this->menus = new ArrayCollection();
         $this->menuPortionFrites = new ArrayCollection();
-        $this->complement1s = new ArrayCollection();
+        $this->complements = new ArrayCollection();
+        $this->complementDeatils = new ArrayCollection();
     }
 
     // #[ORM\Id]
@@ -132,11 +138,24 @@ class PortionFrite extends Produit
     }
 
     /**
-     * @return Collection<int, Complement1>
+     * @return Collection<int, Complement>
      */
-    public function getComplement1s(): Collection
+    public function getComplements(): Collection
     {
-        return $this->complement1s;
+        return $this->complements;
     }
+
+    // /**
+    //  * @return Collection<int, ComplementDeatil>
+    //  */
+    // public function getComplementDeatils(): Collection
+    // {
+    //     return $this->complementDeatils;
+    // }
+
+   
+
+    
+    
    
 }

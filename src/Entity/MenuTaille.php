@@ -15,21 +15,21 @@ class MenuTaille
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["menu-post"])]
+    #[Groups(['menu:get:all', 'get-write', "menu-post", "details"])]
 
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["menu-post",'menu-write'])]
+    #[Groups(['menu:get:all', "details", 'get-write', "menu-post", 'menu-write'])]
     #[Assert\Positive()]
-    
-    private $quantity=1;
+
+    private $quantity = 1;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'menuTailles')]
     private $menu;
 
     #[ORM\ManyToOne(targetEntity: Taille::class, inversedBy: 'menuTailles')]
-    #[Groups(["menu-post",'menu-write'])]
+    #[Groups(['menu:get:all', 'details', 'get-write', "menu-post", 'menu-write'])]
     private $taille;
 
     public function getId(): ?int

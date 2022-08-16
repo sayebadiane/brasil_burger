@@ -30,26 +30,26 @@ class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["menu-post", 'menu-write', "burger:read:simple",'commande-post', 'commande-get', "catalogue-get","taille:read:simple","taille:read:simple",'complement-get', 'complement1-get'])]
+    #[Groups(['commande-get','get-write', 'details', "menu-post", 'menu-write', "burger:read:simple", 'commande-post', "catalogue-get", "taille:read:simple", "taille:read:simple", 'complement-get', 'complement1-get','commande-itemget'])]
     #[ORM\Column(type: 'integer')]
     protected $id;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"menu-post","boisson-post","boisson-get",'boisson-get-simple', 'commande-get', "catalogue-get", "taille:read:simple", 'complement-get', 'complement1-get'])]
+    #[Groups(['get-write', 'details', 'burger-post', "burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple', "menu-post", "boisson-post", "boisson-get", 'boisson-get-simple', 'commande-get', "catalogue-get", "taille:read:simple", 'complement-get', 'complement1-get', 'commande-itemget'])]
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le nom est Obligatoire")]
     protected $nom;
 
-    #[Groups(["burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple',"boisson-get", 'commande-get', "catalogue-get", 'complement-get', 'complement1-get'])]
+    #[Groups(["burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple', "boisson-get", 'commande-get', "catalogue-get", 'complement-get', 'complement1-get', 'details', 'commande-itemget'])]
     #[ORM\Column(type: 'blob')]
     //#[Assert\NotBlank(message: "L'image est Obligatoire")]
     protected $image;
 
-    #[Groups(['burger-post',"burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all",'menu:read:simple', 'commande-get', "catalogue-get", 'complement-get', 'complement1-get'])]
-    #[ORM\Column(type: 'float',nullable:true)]
+    #[Groups(['commande-itemget','get-write', 'details', 'burger-post', "burger:read:simple", "burger:read:all", "write", 'menu-write', 'menu:get:all', "frite:read:simple", "frite:read:all", 'menu:read:simple', 'commande-get', "catalogue-get", 'complement-get', 'complement1-get', 'details'])]
+    #[ORM\Column(type: 'float', nullable: true)]
     // #[Assert\NotBlank(message: "Le prix est Obligatoire")]
     protected $prix;
 
-    #[Groups(['burger-post',"burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post","boisson-post","boisson-get", 'commande-get',])]
+    #[Groups(['burger-post', "burger:read:all", "write", 'menu:get:all', "frite:read:all", "menu-post", "boisson-post", "boisson-get", 'commande-get',])]
     #[ORM\Column(type: 'string', length: 255)]
     protected $etat;
 
@@ -57,18 +57,19 @@ class Produit
     #[ORM\JoinColumn(nullable: true)]
     private $commandes;
 
-  
-// #[Assert\NotBlank(message: "L' image onnnnnnbb est Obligatoire")]
-//    #[SerializedName("images")]
+
+    // #[Assert\NotBlank(message: "L' image onnnnnnbb est Obligatoire")]
+    //    #[SerializedName("images")]
 
     /**
      * @Vich\UploadableField(mapping="media_object", fileNameProperty="filePath")
      */
-   #[Groups("burger-post", "menu-post", 'boisson-post')]
-   private ?File $imagefile=null;
-  #[Groups("catalogue-get")]
-   #[ORM\Column(type: 'string', length: 255, nullable: true)]
-   private $type;
+    #[Groups(['get-write', 'details', "burger-post", "menu-post", 'boisson-post'])]
+    private ?File $imagefile = null;
+
+    #[Groups(["catalogue-get", "details"])]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $type;
 
 
     public function __construct()
@@ -95,13 +96,11 @@ class Produit
 
     public function getImage(): ?string
     {
-        if(is_resource($this->image)){
-    
-            return base64_encode(stream_get_contents($this->image));
-        }
-        elseif($this->image){
-            return base64_encode($this->image);
+        if (is_resource($this->image)) {
 
+            return base64_encode(stream_get_contents($this->image));
+        } elseif ($this->image) {
+            return base64_encode($this->image);
         }
         return null;
     }
@@ -172,7 +171,7 @@ class Produit
     public function setImagefile(File $imagefile): self
     {
         $this->imagefile = $imagefile;
-       
+
 
         return $this;
     }
@@ -188,5 +187,4 @@ class Produit
 
         return $this;
     }
-   
 }

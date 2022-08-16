@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Complement1;
-
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +10,7 @@ use App\Repository\BoissonTailleRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: BoissonTailleRepository::class)]
 #[ApiResource]
 class BoissonTaille
@@ -19,21 +18,20 @@ class BoissonTaille
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-
-    #[Groups(['commande-post', 'commande-get','complement1-get'])]
+    #[Groups(['details','menu:get:all', 'get-write', 'commande-post', 'commande-get', 'complement1-get'])]
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["boisson-post",'complement1-get'])]
+    #[Groups(['details','menu:get:all', 'get-write', "boisson-post", 'complement1-get'])]
     #[Assert\Positive()]
-    private $stoke=1;
+    private $stoke = 1;
 
     #[ORM\ManyToOne(targetEntity: Boisson::class, inversedBy: 'boissonTailles')]
-    #[Groups( 'complement1-get',"taille:read:simple",'complement-get')]
+    #[Groups('details','menu:get:all', 'get-write', 'complement1-get', "taille:read:simple", 'complement-get')]
     private $boisson;
 
     #[ORM\ManyToOne(targetEntity: Taille::class, inversedBy: 'boissonTailles')]
-    #[Groups(["boisson-post"])]
+    // #[Groups(['details',"boisson-post"])]
     private $taille;
 
     #[ORM\OneToMany(mappedBy: 'boissontaille', targetEntity: BoissonTailleCommande::class)]
@@ -42,14 +40,20 @@ class BoissonTaille
     #[ORM\OneToMany(mappedBy: 'tailleboisson', targetEntity: MenuBoissonTailleCommande::class)]
     private $menuBoissonTailleCommandes;
 
-    // #[ORM\OneToMany(mappedBy: 'boissonTailles', targetEntity: Complement1::class)]
-    private $complement1s;
+    // #[ORM\OneToMany(mappedBy: 'boissontailles', targetEntity: Complement::class)]
+    private $complements;
+
+    // #[ORM\OneToMany(mappedBy: 'boissontailles', targetEntity: ComplementDeatil::class)]
+    private $complementDeatils;
+
+
 
     public function __construct()
     {
         $this->boissonTailleCommandes = new ArrayCollection();
         $this->menuBoissonTailleCommandes = new ArrayCollection();
-        $this->complement1s = new ArrayCollection();
+        $this->complements = new ArrayCollection();
+        $this->complementDeatils = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,13 +158,22 @@ class BoissonTaille
     }
 
     /**
-     * @return Collection<int, Complement1>
+     * @return Collection<int, Complement>
      */
-    public function getComplement1s(): Collection
+    public function getComplements(): Collection
     {
-        return $this->complement1s;
+        return $this->complements;
     }
 
+    // /**
+    //  * @return Collection<int, ComplementDeatil>
+    //  */
+    // public function getComplementDeatils(): Collection
+    // {
+    //     return $this->complementDeatils;
+    // }
 
-    
+
+
+
 }
