@@ -47,13 +47,13 @@ class Commande
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['commande-get', 'commande-itemget'])]
+    #[Groups(['livraison-get','livraison-post','commande-get', 'commande-itemget'])]
     private $id;
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['commande-get', 'commande-itemget'])]
+    #[Groups(['livraison-get','livreur-get','commande-get', 'commande-itemget'])]
     private $numeroCommande;
     #[ORM\Column(type: 'datetime')]
-    #[Groups(['commande-get', 'commande-itemget'])]
+    #[Groups(['livraison-get','commande-get', 'commande-itemget'])]
     private $date;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -65,6 +65,7 @@ class Commande
     private $montant;
 
     #[ORM\ManyToOne(targetEntity: Livraison::class, inversedBy: 'commandes')]
+   
     private $livraison;
 
     #[ORM\ManyToOne(targetEntity: Zone::class, inversedBy: 'commandes')]
@@ -80,9 +81,8 @@ class Commande
     #[Groups(['commande-post', 'commande-get','commande-itemget'])]
     #[Assert\Valid]
     private $burgerCommandes;
-
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: MenuCommande::class,cascade:['persist'])]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups(['commande-post', 'commande-get','commande-itemget'])]
     #[Assert\Valid]
     private $menuCommandes;
 

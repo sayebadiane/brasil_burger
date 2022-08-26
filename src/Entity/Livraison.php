@@ -2,27 +2,54 @@
 
 namespace App\Entity;
 
-use App\Repository\LivraisonRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\LivraisonRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LivraisonRepository::class)]
+#[ApiResource(
+    collectionOperations:[ "post" => [
+            'denormalization_context' => ['groups' => 'livraison-post'],
+            'normalization_context' => ['groups' => 'livraison-get']
+
+    ],
+    "get"=>[
+        'normalization_context' => ['groups' => 'livraison-get']
+
+
+    ]
+    ]    
+)]
 class Livraison 
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['livraison-get','livraison-post','livreur-get'])]
+
     private $id;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['livraison-get','livraison-post','livreur-get'])]
     private $montantTotal;
 
-    #[ORM\ManyToOne(targetEntity: Livreur::class, inversedBy: 'livraisons')]
+    #[ORM\ManyToOne(targetEntity: Livreur::class, inversedBy: 'livraisons',cascade:['persist'])]
+    #[Groups(['livraison-post','livraison-get'])]
+
     private $livreur;
 
     #[ORM\OneToMany(mappedBy: 'livraison', targetEntity: Commande::class)]
+    #[Groups(['livraison-get','livraison-post','livreur-get'])]
+    #[ApiSubresource()]
     private $commandes;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['livraison-get', 'livraison-post'])]
+    private $etat;
 
     public function __construct()
     {
@@ -84,6 +111,18 @@ class Livraison
                 $commande->setLivraison(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtat(): ?string
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?string $etat): self
+    {
+        $this->etat = $etat;
 
         return $this;
     }

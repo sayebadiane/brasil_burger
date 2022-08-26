@@ -10,10 +10,20 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LivreurRepository::class)]
-#[ApiResource()]
+#[ApiResource(collectionOperations: [
+        "get" => [
+            'normalization_context' => ['groups' => 'livreur-get'],
+
+
+        ],
+        "post"=>[
+
+        ]
+]
+)]
 #[UniqueEntity(
     fields: 'matriculeMoto',
     message: "le matriculeMoto du livreur doit etre unique"
@@ -22,23 +32,26 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
     fields: 'telephone',
     message: "le telephone dulivreure doit etre unique"
 )]
+
 class Livreur extends User
 {
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le matricule est obligatoire")]
+    #[Groups(['livraison-get','livreur-get'])]
     private $matriculeMoto;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "Le telephone est obligatoire")]
-
+    #[Groups(['livreur-get'])]
     private $telephone;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: "L'etat est obligatoire")]
-
+    #[Groups(['livreur-get'])]
     private $etat;
 
     #[ORM\OneToMany(mappedBy: 'livreur', targetEntity: Livraison::class)]
+    #[Groups(['livreur-get'])]
     private $livraisons;
 
     public function __construct()

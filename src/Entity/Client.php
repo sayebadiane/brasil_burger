@@ -20,6 +20,7 @@ class Client extends User
     private $adresse;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['livraison-get'])]
     private $telephone;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Commande::class)]

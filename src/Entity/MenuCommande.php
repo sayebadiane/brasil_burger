@@ -18,12 +18,12 @@ class MenuCommande
     private $id;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups([ 'commande-itemget','commande-post', 'commande-get',])]
     #[Assert\Positive(message: "quantite doit etre possitif")]
     private $quantite;
 
     #[ORM\ManyToOne(targetEntity: Menu::class, inversedBy: 'menuCommandes')]
-    #[Groups(['commande-post', 'commande-get'])]
+    #[Groups(['commande-post', 'commande-get', 'commande-itemget'])]
     private $menu;
 
     #[ORM\ManyToOne(targetEntity: Commande::class, inversedBy: 'menuCommandes')]

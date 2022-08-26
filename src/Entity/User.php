@@ -35,11 +35,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
 
-    #[Groups(['commande-get',"burger:read:all","write","user:read:simple","menu-write","boisson-post","boisson-get", 'boisson-get-simple'])]
+    #[Groups(['commande-get','livraison-get','livraison-post','livreur-get','commande-get',"burger:read:all","write","user:read:simple","menu-write","boisson-post","boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(['commande-get',"burger:read:all","user:read:simple",'menu:get:all',"frite:read:all",'get-write',"boisson-get", 'boisson-get-simple'])]
+    #[Groups(['commande-get','livraison-get','livreur-get','commande-get',"burger:read:all","user:read:simple",'menu:get:all',"frite:read:all",'get-write',"boisson-get", 'boisson-get-simple'])]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $login;
 
